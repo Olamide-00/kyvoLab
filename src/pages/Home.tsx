@@ -7,6 +7,20 @@ import Typed from "../components/Typed";
 import PhoneFrame from "../components/PhoneFrame";
 import { PROJECTS } from "../data/projects";
 
+import kyvolabLogo from "../assets/logos/kyvolab.jpeg";
+import paystackLogo from "../assets/logos/paystack.png";
+import flutterwaveLogo from "../assets/logos/flutterwave.jpeg";
+import interswitchLogo from "../assets/logos/interswitch.jpeg";
+import stripeLogo from "../assets/logos/stripe.png";
+import nombaLogo from "../assets/logos/nomba.png";
+import vtpassLogo from "../assets/logos/vtpass.jpeg";
+import safeHavenLogo from "../assets/logos/safeheave.png";
+import momoLogo from "../assets/logos/momo.jpeg";
+import nibssLogo from "../assets/logos/nibss.jpeg";
+import bvnLogo from "../assets/logos/bvn.jpeg";
+import ninLogo from "../assets/logos/nin.jpeg";
+import cbnLogo from "../assets/logos/cbn.png";
+
 const GT = ({ c }: { c: string }) => <span className="tg">{c}</span>;
 
 const SERVICE_TEASE = [
@@ -331,6 +345,248 @@ function DevBuildConsole() {
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+type RailCategory = "payments" | "bills" | "settlement";
+
+const RAIL_NODES: {
+  key: string;
+  name: string;
+  logo: string;
+  angle: number;
+  color: string;
+  category: RailCategory;
+}[] = [
+  {
+    key: "paystack",
+    name: "Paystack",
+    logo: paystackLogo,
+    angle: -90,
+    color: "#00d9b4",
+    category: "payments",
+  },
+  {
+    key: "flutterwave",
+    name: "Flutterwave",
+    logo: flutterwaveLogo,
+    angle: -60,
+    color: "#00d9b4",
+    category: "payments",
+  },
+  {
+    key: "interswitch",
+    name: "Interswitch",
+    logo: interswitchLogo,
+    angle: -30,
+    color: "#00d9b4",
+    category: "payments",
+  },
+  {
+    key: "stripe",
+    name: "Stripe",
+    logo: stripeLogo,
+    angle: 0,
+    color: "#00d9b4",
+    category: "payments",
+  },
+  {
+    key: "nomba",
+    name: "Nomba",
+    logo: nombaLogo,
+    angle: 30,
+    color: "#2f8fff",
+    category: "bills",
+  },
+  {
+    key: "vtpass",
+    name: "VTpass",
+    logo: vtpassLogo,
+    angle: 60,
+    color: "#2f8fff",
+    category: "bills",
+  },
+  {
+    key: "safehaven",
+    name: "Safe Haven",
+    logo: safeHavenLogo,
+    angle: 90,
+    color: "#2f8fff",
+    category: "bills",
+  },
+  {
+    key: "momo",
+    name: "MTN MoMo",
+    logo: momoLogo,
+    angle: 120,
+    color: "#2f8fff",
+    category: "bills",
+  },
+  {
+    key: "nibss",
+    name: "NIBSS",
+    logo: nibssLogo,
+    angle: 150,
+    color: "#f5c451",
+    category: "settlement",
+  },
+  {
+    key: "bvn",
+    name: "BVN",
+    logo: bvnLogo,
+    angle: 180,
+    color: "#f5c451",
+    category: "settlement",
+  },
+  {
+    key: "nin",
+    name: "NIN",
+    logo: ninLogo,
+    angle: 210,
+    color: "#f5c451",
+    category: "settlement",
+  },
+  {
+    key: "cbn",
+    name: "CBN",
+    logo: cbnLogo,
+    angle: 240,
+    color: "#f5c451",
+    category: "settlement",
+  },
+];
+
+const ORBIT_LEGEND = [
+  {
+    label: "Payments",
+    color: "#00d9b4",
+    items: "Paystack · Flutterwave · Interswitch · Stripe",
+  },
+  {
+    label: "Bills & BaaS",
+    color: "#2f8fff",
+    items: "Nomba · VTpass · Safe Haven · MTN MoMo",
+  },
+  {
+    label: "Settlement & Compliance",
+    color: "#f5c451",
+    items: "NIBSS · BVN · NIN · CBN",
+  },
+];
+
+function RailLogoImg({ name, src }: { name: string; src: string }) {
+  const [failed, setFailed] = useState(false);
+  const initials = name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+  return !failed ? (
+    <img src={src} alt={name} onError={() => setFailed(true)} />
+  ) : (
+    <span className="railflow-fallback">{initials}</span>
+  );
+}
+
+function FlowNetwork() {
+  const [hovered, setHovered] = useState<string | null>(null);
+  const R = 40;
+
+  return (
+    <div className="railflow-outer">
+      <div className="railflow-container">
+        <svg
+          className="railflow-svg"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid meet"
+          aria-hidden="true"
+        >
+          <defs>
+            <radialGradient id="hubGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="rgba(0,217,180,0.5)" />
+              <stop offset="100%" stopColor="rgba(0,217,180,0)" />
+            </radialGradient>
+          </defs>
+
+          <circle
+            cx="50"
+            cy="50"
+            r="20"
+            fill="url(#hubGlow)"
+            className="railflow-hub-glow"
+          />
+
+          {RAIL_NODES.map((n, i) => {
+            const rad = (n.angle * Math.PI) / 180;
+            const x1 = 50 + R * Math.cos(rad);
+            const y1 = 50 + R * Math.sin(rad);
+            const ctrlRad = ((n.angle + 24) * Math.PI) / 180;
+            const cx = 50 + R * 0.48 * Math.cos(ctrlRad);
+            const cy = 50 + R * 0.48 * Math.sin(ctrlRad);
+            const pathId = `rail-path-${n.key}`;
+            const dur = 2.6 + (i % 4) * 0.6;
+            const delay = (i * 0.28).toFixed(2);
+            const active = hovered === n.key;
+            return (
+              <g key={n.key}>
+                <path
+                  id={pathId}
+                  d={`M ${x1} ${y1} Q ${cx} ${cy} 50 50`}
+                  className={`railflow-path${active ? " is-active" : ""}`}
+                  style={{ ["--rail-color" as string]: n.color }}
+                />
+                <circle
+                  r={active ? 1.7 : 1.2}
+                  className="railflow-pulse"
+                  style={{ ["--rail-color" as string]: n.color }}
+                >
+                  <animateMotion
+                    dur={`${dur}s`}
+                    begin={`${delay}s`}
+                    repeatCount="indefinite"
+                  >
+                    <mpath href={`#${pathId}`} />
+                  </animateMotion>
+                </circle>
+              </g>
+            );
+          })}
+
+          <circle cx="50" cy="50" r="10.5" className="railflow-hub-ring" />
+        </svg>
+
+        {RAIL_NODES.map((n) => {
+          const rad = (n.angle * Math.PI) / 180;
+          const left = 50 + R * Math.cos(rad);
+          const top = 50 + R * Math.sin(rad);
+          return (
+            <div
+              key={n.key}
+              className={`railflow-node${hovered === n.key ? " is-active" : ""}`}
+              style={{
+                left: `${left}%`,
+                top: `${top}%`,
+                ["--rail-color" as string]: n.color,
+              }}
+              onMouseEnter={() => setHovered(n.key)}
+              onMouseLeave={() => setHovered((h) => (h === n.key ? null : h))}
+            >
+              <div className="railflow-tile">
+                <RailLogoImg name={n.name} src={n.logo} />
+              </div>
+              <div className="railflow-node-label">{n.name}</div>
+            </div>
+          );
+        })}
+
+        <div className="railflow-hub">
+          <div className="railflow-hub-tile">
+            <RailLogoImg name="KyvoLab" src={kyvolabLogo} />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -863,6 +1119,193 @@ export default function Home() {
 
           <Reveal delay={180}>
             <DevBuildConsole />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── INTEGRATIONS / RAILS ── */}
+      <section className="sec">
+        <style>{`
+          .railflow-outer { display: flex; justify-content: center; margin-top: 8px; }
+          .railflow-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1 / 1;
+          }
+          .railflow-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+          .railflow-hub-glow {
+            transform-origin: 50px 50px;
+            animation: railHubPulse 3s ease-in-out infinite;
+          }
+          @keyframes railHubPulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.18); }
+          }
+
+          .railflow-path {
+            fill: none;
+            stroke: var(--rail-color);
+            stroke-width: 0.55;
+            stroke-linecap: round;
+            opacity: 0.35;
+            stroke-dasharray: 1.2 2.6;
+            animation: railFlowDash 1.3s linear infinite;
+            transition: opacity 0.25s ease, stroke-width 0.25s ease;
+          }
+          .railflow-path.is-active { opacity: 0.95; stroke-width: 0.9; }
+          @keyframes railFlowDash { to { stroke-dashoffset: -38; } }
+
+          .railflow-pulse {
+            fill: var(--rail-color);
+            filter: drop-shadow(0 0 2.5px var(--rail-color));
+            opacity: 0.9;
+            transition: r 0.2s ease;
+          }
+
+          .railflow-hub-ring {
+            fill: #0b0f1a;
+            stroke: rgba(0, 217, 180, 0.5);
+            stroke-width: 0.5;
+          }
+
+          .railflow-node {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            z-index: 3;
+          }
+          .railflow-tile {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #f5f7fa;
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 6px 16px rgba(8, 15, 30, 0.35);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+          }
+          .railflow-tile img { width: 68%; height: 68%; object-fit: contain; }
+          .railflow-fallback {
+            font-family: "Fira Code", monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: #0b0f1a;
+          }
+          .railflow-node.is-active .railflow-tile,
+          .railflow-node:hover .railflow-tile {
+            transform: scale(1.15);
+            border-color: var(--rail-color);
+            box-shadow: 0 0 0 5px rgba(0, 217, 180, 0.16), 0 8px 20px rgba(8, 15, 30, 0.4);
+          }
+          .railflow-node-label {
+            font-family: "Fira Code", monospace;
+            font-size: 9.5px;
+            color: #6a8da8;
+            white-space: nowrap;
+            opacity: 0.9;
+            transition: color 0.25s ease;
+          }
+          .railflow-node.is-active .railflow-node-label,
+          .railflow-node:hover .railflow-node-label {
+            color: var(--rail-color);
+          }
+
+          .railflow-hub {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 4;
+          }
+          .railflow-hub-tile {
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            background: #f5f7fa;
+            border: 2px solid rgba(0, 217, 180, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 0 0 6px rgba(0, 217, 180, 0.12), 0 10px 26px rgba(8, 15, 30, 0.45);
+            animation: railHubBreathe 3s ease-in-out infinite;
+          }
+          .railflow-hub-tile img { width: 70%; height: 70%; object-fit: contain; }
+          @keyframes railHubBreathe {
+            0%, 100% { box-shadow: 0 0 0 6px rgba(0, 217, 180, 0.12), 0 10px 26px rgba(8, 15, 30, 0.45); }
+            50% { box-shadow: 0 0 0 10px rgba(0, 217, 180, 0.2), 0 10px 30px rgba(8, 15, 30, 0.5); }
+          }
+
+          .orbit-legend { margin: 40px auto 0; max-width: 560px; }
+          .orbit-legend-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            font-family: "Fira Code", monospace;
+            font-size: 12.5px;
+            margin-bottom: 9px;
+          }
+          .orbit-legend-row:last-child { margin-bottom: 0; }
+          .orbit-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; transform: translateY(1px); }
+          .orbit-legend-label { color: #e2e8f0; font-weight: 600; min-width: 190px; }
+          .orbit-legend-items { color: #6a8da8; }
+
+          @media (max-width: 640px) {
+            .railflow-container { max-width: 340px; }
+            .railflow-tile { width: 38px; height: 38px; }
+            .railflow-hub-tile { width: 58px; height: 58px; }
+            .railflow-node-label { display: none; }
+            .orbit-legend-row { flex-direction: column; gap: 3px; margin-bottom: 16px; }
+            .orbit-legend-label { min-width: 0; }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .railflow-path, .railflow-hub-glow, .railflow-hub-tile { animation: none !important; }
+          }
+        `}</style>
+
+        <div className="sec-in">
+          <Reveal>
+            <div className="eyebrow">network.map()</div>
+          </Reveal>
+          <Reveal delay={80}>
+            <h2 className="sec-h2">
+              Every rail your app needs,
+              <br />
+              <GT c="already wired in." />
+            </h2>
+          </Reveal>
+          <Reveal delay={140}>
+            <p className="sec-sub" style={{ marginBottom: 30 }}>
+              Payments, bills, verification, and settlement — the infrastructure
+              layer, so you can focus on the product.
+            </p>
+          </Reveal>
+
+          <Reveal delay={180}>
+            <FlowNetwork />
+          </Reveal>
+
+          <Reveal delay={220}>
+            <div className="orbit-legend">
+              {ORBIT_LEGEND.map((l) => (
+                <div className="orbit-legend-row" key={l.label}>
+                  <span
+                    className="orbit-legend-dot"
+                    style={{ background: l.color }}
+                  />
+                  <span className="orbit-legend-label">{l.label}</span>
+                  <span className="orbit-legend-items">{l.items}</span>
+                </div>
+              ))}
+            </div>
           </Reveal>
         </div>
       </section>
