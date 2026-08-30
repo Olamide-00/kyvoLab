@@ -52,6 +52,7 @@ function valueToPos(value: number) {
 function CommissionCalculator() {
   const [sliderPos, setSliderPos] = useState(() => valueToPos(5_000_000));
   const rafRef = useRef<number | null>(null);
+  const animationStartRef = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
@@ -66,9 +67,12 @@ function CommissionCalculator() {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     const startPos = sliderPos;
     const duration = 420;
-    const startTime = performance.now();
+    animationStartRef.current = null;
     const tick = (now: number) => {
-      const t = Math.min(1, (now - startTime) / duration);
+      if (animationStartRef.current === null) {
+        animationStartRef.current = now;
+      }
+      const t = Math.min(1, (now - animationStartRef.current) / duration);
       const eased = 1 - Math.pow(1 - t, 3);
       setSliderPos(startPos + (targetPos - startPos) * eased);
       if (t < 1) {
