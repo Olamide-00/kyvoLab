@@ -199,7 +199,7 @@ export default function Services() {
           </Reveal>
           <Reveal delay={150}>
             <p className="page-sub">
-              Mobile apps, websites, and custom software — with a specific focus
+              Mobile apps, websites, and custom software with a specific focus
               on fintech products: wallets, VTU, neobanks, MFBs, loan apps,
               investment platforms, and crypto.
             </p>
