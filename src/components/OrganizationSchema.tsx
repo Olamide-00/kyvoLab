@@ -250,11 +250,10 @@ export default function OrganizationSchema() {
     ],
 
     sameAs: [
-      // Add only your real KyvoLab profiles
-      // "https://www.linkedin.com/company/kyvolab",
-      // "https://www.instagram.com/kyvolab",
-      // "https://www.facebook.com/kyvolab",
-      // "https://x.com/kyvolab",
+      "https://www.linkedin.com/company/kyvolab",
+      "https://www.instagram.com/kyvolab",
+      "https://www.facebook.com/kyvolab",
+      "https://x.com/kyvolab",
     ],
   };
 
