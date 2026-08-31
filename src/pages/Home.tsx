@@ -636,7 +636,7 @@ export default function Home() {
             >
               We design &amp; engineer
               <br />
-              <GT c="fintech" /> that ships.
+              <GT c="fintechs" />.
             </h1>
             <p
               className="hero-sub"
