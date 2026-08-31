@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Reveal from "../components/Reveal";
 import { useToast } from "../components/Toast";
+import SEO from "../components/SEO";
 
 const STEPS = [
   {
@@ -196,6 +197,11 @@ export default function Referral() {
       className="sec ref-bg-light"
       style={{ minHeight: "100vh", paddingTop: 140 }}
     >
+      <SEO
+        title="KyvoLab Referral Program"
+        description="Refer businesses to KyvoLab and explore our referral opportunities."
+        path="/referral"
+      />
       <style>{`
         .ref-bg-light {
           position: relative;

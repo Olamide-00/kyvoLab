@@ -2,6 +2,7 @@ import { useState, type JSX } from "react";
 import AlgorithmCanvas from "../components/AlgorithmCanvas";
 import Reveal from "../components/Reveal";
 import { useToast } from "../components/Toast";
+import SEO from "../components/SEO";
 
 function MailGlyph() {
   return (
@@ -138,6 +139,11 @@ export default function Contact() {
       className="sec cont-bg"
       style={{ minHeight: "100vh", paddingTop: 140 }}
     >
+      <SEO
+        title="Contact KyvoLab — Let's Build Your Product"
+        description="Get in touch with KyvoLab to discuss fintech software, payment platforms and custom digital products."
+        path="/contact"
+      />
       <style>{`
         .direct-channels { margin-top: 6px; }
 

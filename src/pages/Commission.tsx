@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Reveal from "../components/Reveal";
+import SEO from "../components/SEO";
 
 const TERMS = [
   {
@@ -130,6 +131,11 @@ export default function Commission() {
       className="sec comm-bg-light"
       style={{ minHeight: "100vh", paddingTop: 140 }}
     >
+      <SEO
+        title="KyvoLab Commission"
+        description="Learn about KyvoLab commissions and partnership opportunities."
+        path="/commission"
+      />
       <style>{`
         .comm-bg-light {
           position: relative;

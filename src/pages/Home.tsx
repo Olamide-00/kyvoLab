@@ -5,6 +5,7 @@ import Reveal from "../components/Reveal";
 import MagCard from "../components/MagCard";
 import Typed from "../components/Typed";
 import PhoneFrame from "../components/PhoneFrame";
+import SEO from "../components/SEO";
 import { PROJECTS } from "../data/projects";
 
 import kyvolabLogo from "../assets/logos/kyvolab.jpeg";
@@ -162,10 +163,14 @@ function DevBuildConsole() {
           all.push({ id: `${s.key}-out-${ri}`, kind: "out", text: r }),
         );
       });
-      setLines(all);
-      setCompletedCount(BUILD_STEPS.length);
-      setPhase("done");
-      return;
+
+      const timeoutId = window.setTimeout(() => {
+        setLines(all);
+        setCompletedCount(BUILD_STEPS.length);
+        setPhase("done");
+      }, 0);
+
+      return () => window.clearTimeout(timeoutId);
     }
 
     runIdRef.current += 1;
@@ -272,12 +277,17 @@ function DevBuildConsole() {
       });
     };
 
-    setLines([]);
-    setCurrentStepIndex(-1);
-    setCompletedCount(0);
-    runStep(0);
+    const runOnce = () => {
+      setLines([]);
+      setCurrentStepIndex(-1);
+      setCompletedCount(0);
+      runStep(0);
+    };
+
+    const resetTimer = window.setTimeout(runOnce, 0);
 
     return () => {
+      window.clearTimeout(resetTimer);
       runIdRef.current += 1;
     };
   }, [inView]);
@@ -598,6 +608,11 @@ export default function Home() {
   return (
     <>
       {/* ── HERO ── */}
+      <SEO
+        title="KyvoLab - Building the Technology Behind Modern Finance"
+        description="KyvoLab builds fintech software, payment solutions and digital financial products for modern businesses."
+        path="/"
+      />
       <section className="hero">
         <AlgorithmCanvas />
         <div className="hero-scrim" />

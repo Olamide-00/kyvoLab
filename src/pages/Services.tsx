@@ -3,6 +3,7 @@ import { useState } from "react";
 import AlgorithmCanvas from "../components/AlgorithmCanvas";
 import Reveal from "../components/Reveal";
 import MagCard from "../components/MagCard";
+import SEO from "../components/SEO";
 
 const ORBIT_ITEMS = [
   { icon: "▣", label: "Mobile" },
@@ -107,6 +108,11 @@ export default function Services() {
 
   return (
     <>
+      <SEO
+        title="Fintech Software Development Services | KyvoLab"
+        description="KyvoLab builds fintech apps, payment platforms, VTU solutions and custom software for businesses."
+        path="/services"
+      />
       <style>{`
         @keyframes orbitSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes orbitSpinRev { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
