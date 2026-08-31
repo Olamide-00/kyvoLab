@@ -21,6 +21,7 @@ import nibssLogo from "../assets/logos/nibss.jpeg";
 import bvnLogo from "../assets/logos/bvn.jpeg";
 import ninLogo from "../assets/logos/nin.jpeg";
 import cbnLogo from "../assets/logos/cbn.png";
+import OrganizationSchema from "../components/OrganizationSchema";
 
 const GT = ({ c }: { c: string }) => <span className="tg">{c}</span>;
 
@@ -609,10 +610,11 @@ export default function Home() {
     <>
       {/* ── HERO ── */}
       <SEO
-        title="KyvoLab - Building the Technology Behind Modern Finance"
-        description="KyvoLab builds fintech software, payment solutions and digital financial products for modern businesses."
+        title="KyvoLab | Fintech App & Software Development Company"
+        description="KyvoLab designs and builds fintech apps, payment platforms, wallets, VTU and bills platforms for African startups and financial businesses."
         path="/"
       />
+      <OrganizationSchema />
       <section className="hero">
         <AlgorithmCanvas />
         <div className="hero-scrim" />
