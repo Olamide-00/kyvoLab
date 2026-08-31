@@ -4,34 +4,34 @@
 
     <url>
         <loc>https://www.kyvolab.com.ng/</loc>
-        <changefreq>weekly</changefreq>
+        <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
 
     <url>
         <loc>https://www.kyvolab.com.ng/services</loc>
-        <changefreq>monthly</changefreq>
+        <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
 
     <url>
         <loc>https://www.kyvolab.com.ng/work</loc>
-        <changefreq>monthly</changefreq>
+        <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
      <url>
         <loc>https://www.kyvolab.com.ng/referral</loc>
-        <changefreq>monthly</changefreq>
+        <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
      <url>
         <loc>https://www.kyvolab.com.ng/commission</loc>
-        <changefreq>monthly</changefreq>
+        <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.kyvolab.com.ng/contact</loc>
-        <changefreq>monthly</changefreq>
+        <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
    
