@@ -10,6 +10,10 @@ import dekingsServices from "../assets/work/dekings-services.jpg";
 import dekingsCoverage from "../assets/work/dekings-coverage.jpg";
 import dekingsKxRide from "../assets/work/dekings-kxride.jpg";
 import dekingsRiderForm from "../assets/work/dekings-rider-form.jpg";
+import psiOnboardingPrecision from "../assets/work/psi-onboarding-precision.jpg";
+import psiOnboardingControl from "../assets/work/psi-onboarding-control.jpg";
+import psiLogin from "../assets/work/psi-login.jpg";
+import psiAdminReports from "../assets/work/psi-admin-reports.jpg";
 
 export type GalleryShot = {
   src: string;
@@ -210,6 +214,62 @@ export const PROJECTS: Project[] = [
       {
         title: "One form, two audiences",
         desc: "A single toggle switches the registration form between 'Become a KX Rider' and 'Become a Partner' — recruiting riders and fleet partners without splitting into separate pages.",
+      },
+    ],
+  },
+  {
+    slug: "psi",
+    name: "PSI Logistics",
+    category: "Logistics · Multi-Role Platform",
+    tagline: "Move luggage with precision.",
+    description:
+      "PSI (PatLog) is a role-based logistics platform built for Patrick Street Import Ltd, coordinating package movement across three distinct apps in one system. Admins create drivers, run full CRUD on every package or luggage item, and assign it to the right hands; drivers work their assigned deliveries; customers track incoming packages and pull up their full delivery history. One backend, three purpose-built experiences.",
+    accent: "#3D6FE0",
+    accentSoft: "rgba(61,111,224,.35)",
+    role: ["Product Design", "Mobile UI Engineering", "Role-Based Access"],
+    year: "2026",
+    status: "shipped",
+    cover: psiAdminReports,
+    coverAlt:
+      "PSI Logistics admin reports screen showing driver performance leaderboard",
+    gallery: [
+      {
+        src: psiOnboardingPrecision,
+        alt: "PSI Logistics onboarding screen — Move luggages with Precision, 99.8% delivery accuracy",
+        label: "Onboarding — Precision",
+      },
+      {
+        src: psiOnboardingControl,
+        alt: "PSI Logistics onboarding screen — Total Control of Every luggage, 10K+ items managed daily",
+        label: "Onboarding — Control",
+      },
+      {
+        src: psiLogin,
+        alt: "PSI Logistics sign-in screen for Patrick Street Import Ltd",
+        label: "Sign In",
+      },
+      {
+        src: psiAdminReports,
+        alt: "PSI Logistics admin dashboard with driver performance and package status",
+        label: "Admin — Reports",
+      },
+    ],
+    highlights: [
+      {
+        title: "Three roles, one system",
+        desc: "Admin, driver, and customer each get an experience scoped to exactly what they need to do — full package CRUD and driver management for admins, assigned jobs for drivers, tracking and history for customers — all reading from the same backend.",
+      },
+      {
+        title: "A driver leaderboard that makes performance visible",
+        desc: "The admin Reports screen ranks drivers by packages delivered, with medal markers for the top three and a live progress bar per driver — turning raw completion counts into a glanceable performance view.",
+      },
+      {
+        title: "Fleet status at the top, always",
+        desc: "Drivers, Delivered, In Transit, and In Stock counts sit in a single stat bar above the fold — the admin's first read on the state of the whole operation before drilling into any one driver.",
+      },
+      {
+        title: "Onboarding that states the numbers up front",
+        desc: "Before login, the app leads with real performance metrics — 99.8% delivery accuracy, 10K+ items managed daily — setting the operational bar before the client ever sees a package list.",
       },
     ],
   },
