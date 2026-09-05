@@ -1,9 +1,15 @@
 import depayHome1 from "../assets/work/depay-home-1.jpg";
-import depayHome2 from "../assets/work/depay-home-2.jpg";
-import obayendoBefore from "../assets/work/obayendo-before.jpg";
+import depayServices from "../assets/work/depay-services.jpg";
+import depayProfile from "../assets/work/depay-profile.jpg";
+import depayReferrals from "../assets/work/depay-referrals.jpg";
 import jaanHome from "../assets/work/jaan-home.jpg";
 import jaanBalance from "../assets/work/jaan-balance.jpg";
 import jaanQuickpay from "../assets/work/jaan-quickpay.jpg";
+import dekingsHero from "../assets/work/dekings-hero.jpg";
+import dekingsServices from "../assets/work/dekings-services.jpg";
+import dekingsCoverage from "../assets/work/dekings-coverage.jpg";
+import dekingsKxRide from "../assets/work/dekings-kxride.jpg";
+import dekingsRiderForm from "../assets/work/dekings-rider-form.jpg";
 
 export type GalleryShot = {
   src: string;
@@ -30,18 +36,18 @@ export type Project = {
   cover: string;
   coverAlt: string;
   gallery: GalleryShot[];
-  before?: { src: string; alt: string; label: string; note: string };
   highlights: Highlight[];
+  url?: string;
 };
 
 export const PROJECTS: Project[] = [
   {
     slug: "depay",
     name: "DePay",
-    category: "Fintech · Bills & Payments",
-    tagline: "Bills, reimagined.",
+    category: "Fintech · VTU & Bill Payments",
+    tagline: "Fast, secure, all your bills in one place.",
     description:
-      "DePay is a Nigerian bills-and-payments app that started life as Obayendo — a template-built wallet with no real identity of its own. We took it apart and rebuilt the product from the interface up: a new name, a considered dark-moss visual system, and a home screen re-architected around the handful of things people actually open the app to do.",
+      "DePay is a Nigerian VTU (Value Top-Up) app built for everyday bill payments — airtime, data, electricity, cable TV, and other utility bills, all from one wallet. Every user gets a dedicated account generated on signup, so funding is as simple as a bank transfer. Built fast, secure, and scalable from the ground up, with a considered dark-moss visual system and a home screen architected around the handful of things people actually open the app to do.",
     accent: "#86b34a",
     accentSoft: "rgba(134,179,74,.35)",
     role: ["Brand Identity", "Product Design", "Mobile UI Engineering"],
@@ -50,19 +56,35 @@ export const PROJECTS: Project[] = [
     cover: depayHome1,
     coverAlt: "DePay home screen showing masked balance and quick access grid",
     gallery: [
-      { src: depayHome1, alt: "DePay home — referral promo state", label: "Home — Refer & earn" },
-      { src: depayHome2, alt: "DePay home — electricity promo state", label: "Home — Pay a bill" },
+      {
+        src: depayHome1,
+        alt: "DePay home screen with masked balance and quick access grid",
+        label: "Home",
+      },
+      {
+        src: depayServices,
+        alt: "DePay services screen listing electricity, airtime, data, cable TV, and education billers",
+        label: "Services — Full catalogue",
+      },
+      {
+        src: depayProfile,
+        alt: "DePay profile screen with account, security, and support settings",
+        label: "Profile — Account & settings",
+      },
+      {
+        src: depayReferrals,
+        alt: "DePay referrals screen showing invite code and tiered reward progress",
+        label: "Profile — Referrals",
+      },
     ],
-    before: {
-      src: obayendoBefore,
-      alt: "Obayendo, the original app before the DePay rebrand",
-      label: "Before — Obayendo",
-      note: "Stock template UI, generic blue palette, no distinct identity.",
-    },
     highlights: [
       {
         title: "Balance privacy by default",
         desc: "The available balance is masked on load — a single tap on the eye icon reveals it. A small detail that signals the app was built by people thinking about how it's actually used in public.",
+      },
+      {
+        title: "A dedicated account, generated instantly",
+        desc: "Every user gets their own virtual bank account on signup — funding the wallet is as simple as a regular bank transfer, no separate 'add card' flow required.",
       },
       {
         title: "Five-tap access to everything that matters",
@@ -70,11 +92,11 @@ export const PROJECTS: Project[] = [
       },
       {
         title: "A promo rail that earns its place",
-        desc: "Instead of a static banner, the rail rotates between a referral push and a same-second electricity payment prompt — both tied to real actions inside the app, not just marketing space.",
+        desc: "Instead of a static banner, the rail rotates between a referral push and a same-second data payment prompt — both tied to real actions inside the app, not just marketing space.",
       },
       {
-        title: "A rebrand with a reason",
-        desc: "Obayendo's generic blue template became a dark moss-green surface with one confident accent — an identity built to read as trustworthy at a glance, on a screen showing someone's real money.",
+        title: "Referral rewards that show the next milestone",
+        desc: "The referrals screen tracks progress toward tiered payouts — 1, 5, and 10 referrals — so the incentive to keep sharing stays visible instead of disappearing after the first invite.",
       },
     ],
   },
@@ -91,11 +113,24 @@ export const PROJECTS: Project[] = [
     year: "2026",
     status: "shipped",
     cover: jaanHome,
-    coverAlt: "Jaan home screen showing wallet balance, JTokens, and quick access grid",
+    coverAlt:
+      "Jaan home screen showing wallet balance, JTokens, and quick access grid",
     gallery: [
-      { src: jaanHome, alt: "Jaan full home screen", label: "Home — Full screen" },
-      { src: jaanBalance, alt: "Jaan wallet balance and JTokens close-up", label: "Detail — Wallet & JTokens" },
-      { src: jaanQuickpay, alt: "Jaan quick access grid and One Tap Pay close-up", label: "Detail — Quick access & One Tap Pay" },
+      {
+        src: jaanHome,
+        alt: "Jaan full home screen",
+        label: "Home — Full screen",
+      },
+      {
+        src: jaanBalance,
+        alt: "Jaan wallet balance and JTokens close-up",
+        label: "Detail — Wallet & JTokens",
+      },
+      {
+        src: jaanQuickpay,
+        alt: "Jaan quick access grid and One Tap Pay close-up",
+        label: "Detail — Quick access & One Tap Pay",
+      },
     ],
     highlights: [
       {
@@ -113,6 +148,68 @@ export const PROJECTS: Project[] = [
       {
         title: "Rewards that show their math",
         desc: "JTokens convert to spendable balance from the home screen itself, with a visible “Convert” action — the reward loop stays legible instead of disappearing into a T&Cs page.",
+      },
+    ],
+  },
+  {
+    slug: "dekings",
+    name: "De Kings",
+    category: "Transport & Logistics · Web Platform",
+    tagline: "Premium transport & logistics, on your terms.",
+    description:
+      "De Kings Transports & Logistics is a premium ride, delivery, and reservation service based in Ogun State, Nigeria. Ahead of a dedicated mobile app, we built the brand's marketing site to carry the full weight of the service line — KX Ride, driver requests, interstate bookings, and reservations — reserved directly through the site in one message, with a confident black-and-gold identity built to read premium from the very first screen.",
+    accent: "#D9A94E",
+    accentSoft: "rgba(217,169,78,.35)",
+    role: ["Brand Identity", "Web Design", "Frontend Engineering"],
+    year: "2026",
+    status: "shipped",
+    url: "https://www.dekingstransportation.com.ng",
+    cover: dekingsHero,
+    coverAlt:
+      "De Kings homepage hero — Premium transport & logistics, on your terms",
+    gallery: [
+      {
+        src: dekingsHero,
+        alt: "De Kings homepage hero section",
+        label: "Home — Hero",
+      },
+      {
+        src: dekingsServices,
+        alt: "De Kings four service offerings — KX Ride, Request a Driver, Book a Ride, Reservations",
+        label: "Home — Services",
+      },
+      {
+        src: dekingsCoverage,
+        alt: "De Kings coverage area across Ogun State towns",
+        label: "Home — Coverage",
+      },
+      {
+        src: dekingsKxRide,
+        alt: "De Kings KX Ride page for intercity bike rides",
+        label: "KX Ride",
+      },
+      {
+        src: dekingsRiderForm,
+        alt: "De Kings rider and partner registration form",
+        label: "KX Ride — Join as rider or partner",
+      },
+    ],
+    highlights: [
+      {
+        title: "Four ways to move, reserved in seconds",
+        desc: "KX Ride, Request a Driver, Book a Ride, and Reservations are laid out as four clear entry points — no app to download yet, every service reserved directly through the site in one message.",
+      },
+      {
+        title: "Built for intercity, not just around town",
+        desc: "The coverage section names the actual towns served — Abeokuta, Sagamu, Ijebu-Ode, Ota — grounding a premium brand promise in routes people actually recognize.",
+      },
+      {
+        title: "KX Ride as its own product moment",
+        desc: "Bike rides between towns get a dedicated page and identity within the brand, positioned as the fast, affordable option next to full car bookings and driver requests.",
+      },
+      {
+        title: "One form, two audiences",
+        desc: "A single toggle switches the registration form between 'Become a KX Rider' and 'Become a Partner' — recruiting riders and fleet partners without splitting into separate pages.",
       },
     ],
   },

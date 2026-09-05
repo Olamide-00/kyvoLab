@@ -251,7 +251,7 @@ export default function OrganizationSchema() {
 
     sameAs: [
       "https://www.linkedin.com/company/kyvolab",
-      "https://www.instagram.com/kyvolab",
+      "https://www.instagram.com/kyvo_lab",
       "https://www.facebook.com/kyvolab",
       "https://x.com/kyvolab",
     ],
