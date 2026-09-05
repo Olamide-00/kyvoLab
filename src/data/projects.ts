@@ -14,6 +14,9 @@ import psiOnboardingPrecision from "../assets/work/psi-onboarding-precision.jpg"
 import psiOnboardingControl from "../assets/work/psi-onboarding-control.jpg";
 import psiLogin from "../assets/work/psi-login.jpg";
 import psiAdminReports from "../assets/work/psi-admin-reports.jpg";
+import nairaxHome from "../assets/work/nairax-home.jpg";
+import nairaxSquad from "../assets/work/nairax-squad.jpg";
+import nairaxRank from "../assets/work/nairax-rank.jpg";
 
 export type GalleryShot = {
   src: string;
@@ -274,21 +277,55 @@ export const PROJECTS: Project[] = [
     ],
   },
   {
-    slug: "swiftpay",
-    name: "SwiftPay",
-    category: "Fintech · In Progress",
-    tagline: "Case study in progress.",
+    slug: "nairax",
+    name: "NairaX",
+    category: "Fintech · AI-Powered Payments",
+    tagline: "Just tell it what to send.",
     description:
-      "SwiftPay is the next client build in the KyvoLab pipeline. This page is wired up and ready — screens, gallery, and highlights will land here as soon as they're in hand.",
-    accent: "#7c8ca6",
-    accentSoft: "rgba(124,140,166,.25)",
-    role: ["Product Design", "Mobile UI Engineering"],
+      "NairaX is a fintech wallet built around a simple shift: instead of navigating forms to move money, users type or chat what they want — 'send 5k to Ada for rent' — and the AI handles the transaction. Beyond payments, the app layers in Squad, a private group-fundraising tool for shared goals, and Rank, an XP-and-badge leaderboard that turns wallet activity into a light social game.",
+    accent: "#6C5CE7",
+    accentSoft: "rgba(108,92,231,.35)",
+    role: ["Product Design", "Mobile UI Engineering", "Conversational AI UX"],
     year: "2026",
-    status: "in-progress",
-    cover: "",
-    coverAlt: "",
-    gallery: [],
-    highlights: [],
+    status: "shipped",
+    cover: nairaxHome,
+    coverAlt:
+      "NairaX home screen showing wallet balance, chat transfer, and Fund Me actions",
+    gallery: [
+      {
+        src: nairaxHome,
+        alt: "NairaX home screen with balance, chat transfer, and KYC prompt",
+        label: "Home — Wallet",
+      },
+      {
+        src: nairaxSquad,
+        alt: "NairaX Squad screen showing private group fundraising campaigns with progress bars",
+        label: "Squad — Group goals",
+      },
+      {
+        src: nairaxRank,
+        alt: "NairaX Rank screen showing a Top Ballers XP leaderboard with badges",
+        label: "Rank — Leaderboard",
+      },
+    ],
+    highlights: [
+      {
+        title: "Chat transfer as the primary send flow",
+        desc: '"Send money through chat" sits as a first-class action on the home screen, not a hidden feature — the AI reads natural language and resolves it into a transaction, no recipient forms or dropdowns required.',
+      },
+      {
+        title: "KYC framed as an unlock, not a gate",
+        desc: "Rather than blocking the app outright, the balance and transfer actions stay visible while a single prompt — 'Complete your KYC to unlock transfers' — makes the next step obvious without feeling punitive.",
+      },
+      {
+        title: "Squad turns saving into a shared, trackable goal",
+        desc: "Private group campaigns carry a reference code, a live raised-vs-target bar, and a day countdown — built for real cases like a community garden or school supplies drive, not a generic 'group wallet.'",
+      },
+      {
+        title: "Rank gives wallet activity a leaderboard",
+        desc: "XP totals convert into tiered badges — Starter, Big Boss, Don, Legend — with a Top 3 podium and crowned #1 spot, giving financial activity the same pull as a game's progression system.",
+      },
+    ],
   },
 ];
 
