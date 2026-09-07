@@ -32,9 +32,12 @@ export type Highlight = {
 export type Project = {
   slug: string;
   name: string;
+  client: string;
   category: string;
   tagline: string;
   description: string;
+  metaTitle: string;
+  metaDescription: string;
   accent: string;
   accentSoft: string;
   role: string[];
@@ -51,10 +54,14 @@ export const PROJECTS: Project[] = [
   {
     slug: "depay",
     name: "DePay",
+    client: "DePay",
     category: "Fintech · VTU & Bill Payments",
     tagline: "Fast, secure, all your bills in one place.",
     description:
       "DePay is a Nigerian VTU (Value Top-Up) app built for everyday bill payments — airtime, data, electricity, cable TV, and other utility bills, all from one wallet. Every user gets a dedicated account generated on signup, so funding is as simple as a bank transfer. Built fast, secure, and scalable from the ground up, with a considered dark-moss visual system and a home screen architected around the handful of things people actually open the app to do.",
+    metaTitle: "DePay — Nigerian VTU & Bill Payment App | KyvoLab Case Study",
+    metaDescription:
+      "How KyvoLab designed and built DePay, a Nigerian VTU app for airtime, data, electricity and cable TV payments — brand identity through mobile UI engineering.",
     accent: "#86b34a",
     accentSoft: "rgba(134,179,74,.35)",
     role: ["Brand Identity", "Product Design", "Mobile UI Engineering"],
@@ -110,10 +117,14 @@ export const PROJECTS: Project[] = [
   {
     slug: "jaan",
     name: "Jaan",
+    client: "Jaan",
     category: "Fintech · Wallet & Rewards",
     tagline: "One wallet, every bill.",
     description:
       "Jaan is a rewards-driven payments app built around a simple idea: every bill you pay should earn something back. The interface pairs a cash balance with JTokens — a second, visible currency that lives right next to your real balance instead of buried in a separate rewards tab.",
+    metaTitle: "Jaan — Rewards-Driven Wallet App | KyvoLab Case Study",
+    metaDescription:
+      "How KyvoLab designed Jaan, a rewards-based bill payment wallet with JTokens and One Tap Pay, from product design through mobile UI engineering.",
     accent: "#7653F7",
     accentSoft: "rgba(118,83,247,.35)",
     role: ["Product Design", "Mobile UI Engineering", "Rewards UX"],
@@ -161,10 +172,14 @@ export const PROJECTS: Project[] = [
   {
     slug: "nairax",
     name: "NairaX",
+    client: "NairaX",
     category: "Fintech · AI-Powered Payments",
     tagline: "Just tell it what to send.",
     description:
       "NairaX is a fintech wallet built around a simple shift: instead of navigating forms to move money, users type or chat what they want — 'send 5k to Ada for rent' — and the AI handles the transaction. Beyond payments, the app layers in Squad, a private group-fundraising tool for shared goals, and Rank, an XP-and-badge leaderboard that turns wallet activity into a light social game.",
+    metaTitle: "NairaX — AI-Powered Fintech Wallet | KyvoLab Case Study",
+    metaDescription:
+      "How KyvoLab built NairaX, an AI fintech wallet with chat-based transfers, group fundraising, and gamified rewards — product design through mobile UI.",
     accent: "#6C5CE7",
     accentSoft: "rgba(108,92,231,.35)",
     role: ["Product Design", "Mobile UI Engineering", "Conversational AI UX"],
@@ -212,10 +227,15 @@ export const PROJECTS: Project[] = [
   {
     slug: "dekings",
     name: "De Kings",
+    client: "De Kings Transports & Logistics",
     category: "Transport & Logistics · Web Platform",
     tagline: "Premium transport & logistics, on your terms.",
     description:
       "De Kings Transports & Logistics is a premium ride, delivery, and reservation service based in Ogun State, Nigeria. Ahead of a dedicated mobile app, we built the brand's marketing site to carry the full weight of the service line — KX Ride, driver requests, interstate bookings, and reservations — reserved directly through the site in one message, with a confident black-and-gold identity built to read premium from the very first screen.",
+    metaTitle:
+      "De Kings Transports & Logistics — Web Platform | KyvoLab Case Study",
+    metaDescription:
+      "How KyvoLab built the brand identity and marketing site for De Kings Transports & Logistics, a premium ride and logistics service in Ogun State, Nigeria.",
     accent: "#D9A94E",
     accentSoft: "rgba(217,169,78,.35)",
     role: ["Brand Identity", "Web Design", "Frontend Engineering"],
@@ -274,10 +294,15 @@ export const PROJECTS: Project[] = [
   {
     slug: "psi",
     name: "PSI Logistics",
+    client: "Patrick Street Import Ltd",
     category: "Logistics · Multi-Role Platform",
     tagline: "Move luggage with precision.",
     description:
       "PSI (PatLog) is a role-based logistics platform built for Patrick Street Import Ltd, coordinating package movement across three distinct apps in one system. Admins create drivers, run full CRUD on every package or luggage item, and assign it to the right hands; drivers work their assigned deliveries; customers track incoming packages and pull up their full delivery history. One backend, three purpose-built experiences.",
+    metaTitle:
+      "PSI Logistics — Role-Based Delivery Platform | KyvoLab Case Study",
+    metaDescription:
+      "How KyvoLab built PSI Logistics for Patrick Street Import Ltd — a role-based platform with admin, driver, and customer apps on one backend.",
     accent: "#3D6FE0",
     accentSoft: "rgba(61,111,224,.35)",
     role: ["Product Design", "Mobile UI Engineering", "Role-Based Access"],

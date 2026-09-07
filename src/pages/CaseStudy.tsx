@@ -2,6 +2,8 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import AlgorithmCanvas from "../components/AlgorithmCanvas";
 import Reveal from "../components/Reveal";
 import PhoneFrame from "../components/PhoneFrame";
+import SEO from "../components/SEO";
+import ProjectSchema from "../components/ProjectSchema";
 import { PROJECTS, getProject } from "../data/projects";
 
 export default function CaseStudy() {
@@ -16,6 +18,18 @@ export default function CaseStudy() {
   if (project.status === "in-progress") {
     return (
       <section className="page-hero cs-pending">
+        <SEO
+          title={`${project.name} — ${project.tagline} | KyvoLab`}
+          description={project.description}
+          path={`/work/${project.slug}`}
+        />
+        <ProjectSchema
+          name={project.name}
+          description={project.description}
+          slug={project.slug}
+          image={project.cover}
+          category={project.category}
+        />
         <AlgorithmCanvas intensity="low" />
         <div className="hero-scrim" />
         <div className="page-hero-in">
@@ -78,6 +92,19 @@ export default function CaseStudy() {
 
   return (
     <>
+      <SEO
+        title={`${project.name} — ${project.tagline} | KyvoLab`}
+        description={project.description}
+        path={`/work/${project.slug}`}
+        image={project.cover}
+      />
+      <ProjectSchema
+        name={project.name}
+        description={project.description}
+        slug={project.slug}
+        image={project.cover}
+        category={project.category}
+      />
       <section
         className="page-hero cs-hero"
         style={{

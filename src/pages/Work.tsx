@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import AlgorithmCanvas from "../components/AlgorithmCanvas";
 import Reveal from "../components/Reveal";
 import SEO from "../components/SEO";
+import WorkListSchema from "../components/WorkListSchema";
 import PhoneFrame from "../components/PhoneFrame";
 import { PROJECTS } from "../data/projects";
 
@@ -13,6 +14,7 @@ export default function Work() {
         description="Explore software, fintech and digital products built by KyvoLab."
         path="/work"
       />
+      <WorkListSchema projects={PROJECTS} />
       <section className="page-hero">
         <AlgorithmCanvas intensity="low" />
         <div className="hero-scrim" />
