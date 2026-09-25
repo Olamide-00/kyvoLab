@@ -13,6 +13,7 @@ import CaseStudy from "./pages/CaseStudy.tsx";
 import Referral from "./pages/Referral.tsx";
 import Commission from "./pages/Commission.tsx";
 import Contact from "./pages/Contact.tsx";
+import Team from "./pages/Team.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 createRoot(document.getElementById("root")!).render(
@@ -25,6 +26,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/services" element={<Services />} />
             <Route path="/work" element={<Work />} />
             <Route path="/work/:slug" element={<CaseStudy />} />
+            <Route path="/team" element={<Team />} />
             <Route path="/referral" element={<Referral />} />
             <Route path="/commission" element={<Commission />} />
             <Route path="/contact" element={<Contact />} />

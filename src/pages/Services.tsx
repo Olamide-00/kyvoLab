@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import AlgorithmCanvas from "../components/AlgorithmCanvas";
 import Reveal from "../components/Reveal";
 import MagCard from "../components/MagCard";
 import SEO from "../components/SEO";
+import Typed from "../components/Typed";
+import ServicesSchema from "../components/ServicesSchema";
+import SpecScreen, { type SpecKind } from "../components/SpecScreen";
+import "../styles/services.css";
 
 const ORBIT_ITEMS = [
   { icon: "▣", label: "Mobile" },
@@ -16,63 +20,126 @@ const ORBIT_ITEMS = [
   { icon: "◐", label: "Crypto" },
 ];
 
-const CORE = [
+type MockKind = "mobile" | "web" | "api";
+
+const CORE: {
+  icon: string;
+  title: string;
+  desc: string;
+  tags: string[];
+  mock: MockKind;
+}[] = [
   {
     icon: "▣",
     title: "Mobile App Development",
     desc: "Native and cross-platform apps for iOS and Android — built to actually ship, not just prototype.",
     tags: ["iOS", "Android", "React Native / Flutter"],
+    mock: "mobile",
   },
   {
     icon: "◧",
     title: "Website Development",
     desc: "Marketing sites, dashboards, and web apps that hold up next to your mobile product, not an afterthought.",
     tags: ["Web Apps", "Dashboards", "Marketing Sites"],
+    mock: "web",
   },
   {
     icon: "◆",
     title: "Custom Software Development",
     desc: "Bespoke systems for workflows off-the-shelf tools can't handle — internal tools, admin panels, integrations.",
     tags: ["Internal Tools", "Integrations", "APIs"],
+    mock: "api",
   },
 ];
 
-const FINTECH = [
+const FINTECH: {
+  icon: string;
+  title: string;
+  desc: string;
+  tags: string[];
+  kind: SpecKind;
+  accent: string;
+}[] = [
   {
     icon: "▣",
     title: "Wallet Apps",
     desc: "Balance cards, transfers, and transaction feeds — the core loop every wallet app lives or dies by.",
     tags: ["Wallets", "Transfers", "Transactions"],
+    kind: "wallet",
+    accent: "#00D9B4",
   },
   {
     icon: "◈",
     title: "VTU & Bills Platforms",
     desc: "Airtime, data, electricity, and cable subscriptions — one-tap bill payment experiences.",
     tags: ["VTU", "Airtime & Data", "Utilities"],
+    kind: "vtu",
+    accent: "#F59E0B",
   },
   {
     icon: "⬢",
     title: "Neobank & MFB Apps",
     desc: "Digital banking interfaces for microfinance banks and neobanks — accounts, cards, and statements people trust.",
     tags: ["Digital Banking", "Accounts", "Cards"],
+    kind: "bank",
+    accent: "#2F8FFF",
   },
   {
     icon: "◎",
     title: "Loan & Credit Apps",
     desc: "Application flows, repayment schedules, and credit dashboards designed to feel transparent, not predatory.",
     tags: ["Lending", "Repayments", "Credit Scoring"],
+    kind: "loan",
+    accent: "#A78BFA",
   },
   {
     icon: "⬡",
     title: "Investment & Wealth Apps",
     desc: "Portfolio dashboards, market data, and trade flows built for clarity under real market pressure.",
     tags: ["Portfolios", "Market Data", "Trading UX"],
+    kind: "invest",
+    accent: "#4ADE80",
   },
   {
     icon: "◐",
     title: "Crypto & Web3 Apps",
     desc: "Wallets, swaps, and on-chain activity made legible for people who aren't reading a block explorer.",
     tags: ["Wallets", "Swaps", "On-chain"],
+    kind: "crypto",
+    accent: "#F472B6",
+  },
+];
+
+const DEFAULTS = [
+  {
+    icon: "⛨",
+    t: "Security baked in",
+    d: "Encryption, PIN & biometric auth, rate limits and audit trails from day one.",
+  },
+  {
+    icon: "◉",
+    t: "KYC ready",
+    d: "BVN, NIN and document verification flows wired into onboarding.",
+  },
+  {
+    icon: "⇄",
+    t: "Payment rails",
+    d: "Gateways, virtual accounts and transfers integrated and reconciled.",
+  },
+  {
+    icon: "▤",
+    t: "Admin dashboard",
+    d: "Users, transactions, disputes and reports — so ops never touch the database.",
+  },
+  {
+    icon: "◷",
+    t: "Analytics & events",
+    d: "Funnels and product events instrumented so you know what's working.",
+  },
+  {
+    icon: "✦",
+    t: "Design system",
+    d: "A reusable component library, so screen #50 looks as sharp as screen #1.",
   },
 ];
 
@@ -99,121 +166,236 @@ const PROCESS = [
   },
 ];
 
-export default function Services() {
-  const [openFlips, setOpenFlips] = useState<number[]>([]);
-  const toggleFlip = (i: number) =>
-    setOpenFlips((prev) =>
-      prev.includes(i) ? prev.filter((x) => x !== i) : [...prev, i],
+const FAQS = [
+  {
+    q: "How long does it take to build a fintech app?",
+    a: "It depends on scope. After a short discovery phase we give you a fixed timeline and milestone plan, so you know exactly when designs, builds and launch will land.",
+  },
+  {
+    q: "Can you integrate Paystack, Flutterwave or other payment providers?",
+    a: "Yes. We integrate payment gateways, virtual accounts, bank transfers and bill-payment APIs, and build the reconciliation and admin tooling around them.",
+  },
+  {
+    q: "Do you handle KYC like BVN and NIN verification?",
+    a: "Yes. We design and build onboarding flows with BVN, NIN and document verification through your chosen KYC provider.",
+  },
+  {
+    q: "Can you redesign or rebuild an existing app?",
+    a: "Absolutely. Many of our projects are full rebrands or redesigns — we audit what exists, keep what works, and rebuild what doesn't.",
+  },
+  {
+    q: "Do you work with clients outside Nigeria?",
+    a: "Yes. We're based in Nigeria and work with startups and financial businesses across Africa.",
+  },
+  {
+    q: "What happens after launch?",
+    a: "You get documented code and a clean handoff. We also offer ongoing maintenance and feature work if you want us to stay on.",
+  },
+];
+
+function useInView<T extends Element>(threshold = 0.3) {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), {
+      threshold,
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [threshold]);
+  return [ref, inView] as const;
+}
+
+/* ── core capability mockups ── */
+function CoreMock({ kind }: { kind: MockKind }) {
+  if (kind === "mobile") {
+    return (
+      <div className="sv-mock sv-mock-mobile">
+        <div className="sv-mm-rings" />
+        <div className="sv-mm-chip c1">
+          <b>✓</b> Face ID
+        </div>
+        <div className="sv-mm-chip c2">
+          <b>iOS</b> + Android
+        </div>
+        <div className="sv-mm-chip c3">
+          <b>60</b> fps
+        </div>
+        <div className="sv-mm-phone">
+          <div className="sv-mm-notch" />
+          <div className="sv-mm-bal">
+            <span>Balance</span>
+            <b>₦248,500</b>
+          </div>
+          <div className="sv-mm-actions">
+            <i /> <i /> <i /> <i />
+          </div>
+          <div className="sv-mm-row" />
+          <div className="sv-mm-row" />
+          <div className="sv-mm-row short" />
+          <div className="sv-mm-row" />
+          <div className="sv-mm-row short" />
+        </div>
+        <div className="sv-mm-toast">
+          <span className="sv-mm-toast-dot">↓</span> ₦25,000 received
+        </div>
+      </div>
     );
+  }
+  if (kind === "web") {
+    return (
+      <div className="sv-mock sv-mock-web">
+        <div className="sv-mw-bar">
+          <i /> <i /> <i />
+          <span>app.yourproduct.com</span>
+        </div>
+        <div className="sv-mw-body">
+          <div className="sv-mw-side">
+            <i className="on" /> <i /> <i /> <i />
+          </div>
+          <div className="sv-mw-main">
+            <div className="sv-mw-kpis">
+              <div />
+              <div />
+              <div />
+            </div>
+            <div className="sv-mw-chart">
+              {[40, 65, 50, 80, 58, 92, 74].map((h, i) => (
+                <span
+                  key={i}
+                  style={{
+                    ["--h" as string]: `${h}%`,
+                    animationDelay: `${i * 0.12}s`,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="sv-mock sv-mock-api">
+      <svg viewBox="0 0 300 150" className="sv-ma-svg" aria-hidden>
+        <path d="M60 40 C 120 40, 120 75, 150 75" />
+        <path d="M60 110 C 120 110, 120 75, 150 75" />
+        <path d="M150 75 C 180 75, 180 40, 240 40" />
+        <path d="M150 75 C 180 75, 180 110, 240 110" />
+      </svg>
+      <span className="sv-ma-node" style={{ left: "20%", top: "26.6%" }}>
+        app
+      </span>
+      <span className="sv-ma-node" style={{ left: "20%", top: "73.3%" }}>
+        admin
+      </span>
+      <span className="sv-ma-node core" style={{ left: "50%", top: "50%" }}>
+        api
+      </span>
+      <span className="sv-ma-node" style={{ left: "80%", top: "26.6%" }}>
+        ledger
+      </span>
+      <span className="sv-ma-node" style={{ left: "80%", top: "73.3%" }}>
+        kyc
+      </span>
+    </div>
+  );
+}
+
+function Card({ children, accent }: { children: ReactNode; accent?: string }) {
+  return (
+    <div
+      className="sv-shell"
+      style={accent ? { ["--accent" as string]: accent } : undefined}
+    >
+      <MagCard cls="sv-card">
+        <div className="sv-card-spot" />
+        {children}
+      </MagCard>
+    </div>
+  );
+}
+
+export default function Services() {
+  const [active, setActive] = useState(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [explorerRef, explorerInView] = useInView<HTMLDivElement>(0.35);
+  const [procRef, procInView] = useInView<HTMLDivElement>(0.4);
+  const spec = FINTECH[active];
 
   return (
     <>
       <SEO
         title="Fintech Software Development Services | KyvoLab"
-        description="KyvoLab builds fintech apps, payment platforms, VTU solutions and custom software for businesses."
+        description="KyvoLab builds fintech apps, digital wallets, VTU & bill payment platforms, neobank, loan, investment and crypto apps, plus mobile, web and custom software for businesses in Nigeria and Africa."
         path="/services"
       />
-      <style>{`
-        @keyframes orbitSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes orbitSpinRev { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
-        @keyframes corePulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0,217,180,.35); } 50% { box-shadow: 0 0 0 14px rgba(0,217,180,0); } }
-        .orbit-reveal-wrap { position: relative; z-index: 3; }
-        .orbit-section { display: flex; justify-content: center; padding: 10px 0 26px; position: relative; z-index: 3; }
-        .orbit-wrap { position: relative; width: 420px; height: 420px; flex-shrink: 0; }
-        .orbit-core {
-          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-          width: 84px; height: 84px; border-radius: 50%;
-          background: linear-gradient(135deg, #00d9b4, #2f8fff);
-          display: flex; align-items: center; justify-content: center;
-          font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 15px; color: #06121a;
-          z-index: 3; animation: corePulse 3s ease-in-out infinite;
-        }
-        .orbit-ring { position: absolute; inset: 0; animation: orbitSpin 44s linear infinite; }
-        .orbit-ring.r2 { inset: 46px; animation-duration: 34s; animation-direction: reverse; }
-        .orbit-node { position: absolute; top: 50%; left: 50%; width: 0; height: 0; }
-        .orbit-node-spin {
-          position: absolute; top: 0; left: 0; width: 0; height: 0;
-          animation: orbitSpinRev 44s linear infinite;
-        }
-        .orbit-ring.r2 .orbit-node-spin { animation: orbitSpin 34s linear infinite; }
-        .orbit-node-inner {
-          position: absolute; top: 0; left: 0;
-          display: flex; flex-direction: column; align-items: center; gap: 5px;
-        }
-        .orbit-node-chip {
-          width: 46px; height: 46px; border-radius: 13px; background: #0b0f1a;
-          border: 1px solid rgba(0,217,180,.25); display: flex; align-items: center; justify-content: center;
-          font-size: 18px; color: #00d9b4; box-shadow: 0 8px 22px rgba(8,15,30,.18);
-        }
-        .orbit-node-label { font-family: "Fira Code", monospace; font-size: 9.5px; color: #4a6a80; letter-spacing: .5px; white-space: nowrap; }
-        .orbit-line { position: absolute; inset: 0; border-radius: 50%; border: 1px dashed rgba(0,217,180,.16); }
-        .orbit-line.l2 { inset: 46px; border-color: rgba(47,143,255,.16); }
-        @media (max-width: 640px) { .orbit-wrap { transform: scale(0.62); margin: -70px 0; } }
+      <ServicesSchema services={[...CORE, ...FINTECH]} faqs={FAQS} />
 
-        .flip-card { perspective: 1200px; height: 232px; cursor: pointer; }
-        .flip-inner {
-          position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
-          transition: transform 0.6s cubic-bezier(.4,.2,.2,1);
-        }
-        .flip-card:hover .flip-inner, .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
-        .flip-face {
-          position: absolute; inset: 0; backface-visibility: hidden; border-radius: 20px;
-          padding: 28px; display: flex; flex-direction: column;
-        }
-        .flip-front {
-          background: rgba(255,255,255,.85); border: 1px solid rgba(8,15,30,.06);
-          box-shadow: 0 2px 20px rgba(8,15,30,.04); justify-content: space-between;
-        }
-        .flip-back {
-          background: #0b0f1a; color: #fff; transform: rotateY(180deg); justify-content: center;
-          border: 1px solid rgba(0,217,180,.18);
-        }
-        .flip-hint { font-family: "Fira Code", monospace; font-size: 10px; color: #7c8ca6; letter-spacing: .5px; }
-        .flip-back-desc { font-size: 13px; color: #b8c4d6; line-height: 1.65; margin-bottom: 14px; }
-
-        .pipe-wrap { position: relative; height: 3px; background: rgba(0,217,180,.14); border-radius: 3px; margin: 50px 0 44px; }
-        .pipe-glow {
-          position: absolute; top: 50%; width: 110px; height: 3px; transform: translateY(-50%);
-          border-radius: 3px; background: linear-gradient(90deg, transparent, #00d9b4, #2f8fff, transparent);
-          animation: pipeFlow 4.5s linear infinite;
-        }
-        @keyframes pipeFlow { 0% { left: -110px; } 100% { left: 100%; } }
-        .pipe-node {
-          position: absolute; top: 50%; width: 9px; height: 9px; border-radius: 50%;
-          background: #00d9b4; transform: translate(-50%, -50%); box-shadow: 0 0 0 4px rgba(0,217,180,.15);
-        }
-      `}</style>
-
-      <section className="page-hero">
+      {/* ── HERO ── */}
+      <section className="page-hero sv-hero">
         <AlgorithmCanvas intensity="low" />
         <div className="hero-scrim" />
-        <div className="page-hero-in">
-          <Reveal>
-            <div className="hero-eye">
-              <div className="hero-dot" />
-              <span style={{ fontFamily: "Fira Code, monospace" }}>
-                services.list()
-              </span>
-            </div>
-          </Reveal>
-          <Reveal delay={80}>
-            <h1 className="page-h1">
-              What we build,
-              <br />
-              <span className="tg">precisely.</span>
-            </h1>
-          </Reveal>
-          <Reveal delay={150}>
-            <p className="page-sub">
-              Mobile apps, websites, and custom software with a specific focus
-              on fintech products: wallets, VTU, neobanks, MFBs, loan apps,
-              investment platforms, and crypto.
-            </p>
-          </Reveal>
+        <div className="sv-hero-in">
+          <div>
+            <Reveal>
+              <div className="hero-eye">
+                <div className="hero-dot" />
+                <span>services.list()</span>
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <h1 className="page-h1">
+                What we build,
+                <br />
+                <span className="tg">precisely.</span>
+              </h1>
+            </Reveal>
+            <Reveal delay={150}>
+              <p className="page-sub">
+                Mobile apps, websites, and custom software with a specific focus
+                on fintech products: wallets, VTU, neobanks, MFBs, loan apps,
+                investment platforms, and crypto.
+              </p>
+            </Reveal>
+            <Reveal delay={220}>
+              <div className="sv-cmd">
+                <span className="tc-teal">›</span> kyvo.build(
+                <span className="sv-cmd-str">
+                  "
+                  <Typed
+                    strings={[
+                      "wallet app",
+                      "vtu platform",
+                      "neobank",
+                      "loan app",
+                      "crypto exchange",
+                      "admin dashboard",
+                    ]}
+                  />
+                  "
+                </span>
+                )
+              </div>
+            </Reveal>
+            <Reveal delay={280}>
+              <div className="sv-hero-btns">
+                <Link to="/contact" className="btn-p">
+                  Start a project →
+                </Link>
+                <a href="#specialties" className="btn-s">
+                  Explore specialties
+                </a>
+              </div>
+            </Reveal>
+          </div>
 
           <Reveal delay={220} className="orbit-reveal-wrap">
             <div className="orbit-section">
               <div className="orbit-wrap">
+                <div className="orbit-glow" />
                 <div className="orbit-line" />
                 <div className="orbit-line l2" />
                 <div className="orbit-core">KyvoLab</div>
@@ -275,43 +457,47 @@ export default function Services() {
         </div>
       </section>
 
-      {/* ── CORE CAPABILITIES ── */}
-      <section className="sec" style={{ paddingTop: 60 }}>
+      {/* ── CORE CAPABILITIES (bento) ── */}
+      <section className="sec sv-dark">
+        <div className="sv-aurora" />
         <div className="sec-in">
           <Reveal>
             <div className="eyebrow">core capabilities</div>
           </Reveal>
           <Reveal delay={80}>
-            <h2 className="sec-h2">
+            <h2 className="sec-h2" style={{ color: "#fff" }}>
               The foundation:
               <br />
               <span className="tg">apps, web, software.</span>
             </h2>
           </Reveal>
 
-          <div className="svc-grid" style={{ marginTop: 40 }}>
+          <div className="sv-bento">
             {CORE.map((s, i) => (
-              <Reveal key={s.title} delay={i * 60}>
-                <MagCard cls="svc-card">
-                  <div className="svc-icon">{s.icon}</div>
-                  <div className="svc-title">{s.title}</div>
-                  <div className="svc-desc">{s.desc}</div>
-                  <div className="svc-tags">
-                    {s.tags.map((t) => (
-                      <span key={t} className="svc-tag">
-                        {t}
-                      </span>
-                    ))}
+              <Reveal key={s.title} delay={i * 110} className={`sv-bento-${i}`}>
+                <Card>
+                  <CoreMock kind={s.mock} />
+                  <div className="sv-card-body">
+                    <div className="sv-card-idx">0{i + 1}</div>
+                    <h3 className="sv-card-title">{s.title}</h3>
+                    <p className="sv-card-desc">{s.desc}</p>
+                    <div className="ptags">
+                      {s.tags.map((t) => (
+                        <span key={t} className="ptag">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </MagCard>
+                </Card>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── FINTECH SPECIALTIES (flip cards) ── */}
-      <section className="sec svc-tease-bg">
+      {/* ── FINTECH SPECIALTIES (explorer) ── */}
+      <section className="sec svc-tease-bg" id="specialties">
         <div className="sec-in">
           <Reveal>
             <div className="eyebrow">fintech specialties</div>
@@ -324,48 +510,113 @@ export default function Services() {
             </h2>
           </Reveal>
           <Reveal delay={140}>
-            <p className="sec-sub" style={{ marginBottom: 20 }}>
-              Tap or hover a card to see what's inside.
+            <p className="sec-sub">
+              Pick a product type to preview what we build — or sit back and
+              watch them cycle.
             </p>
           </Reveal>
 
-          <div className="svc-grid" style={{ marginTop: 24 }}>
-            {FINTECH.map((s, i) => (
-              <Reveal key={s.title} delay={i * 60}>
-                <div
-                  className={`flip-card ${openFlips.includes(i) ? "flipped" : ""}`}
-                  onClick={() => toggleFlip(i)}
+          <div
+            ref={explorerRef}
+            className={`sv-explorer ${explorerInView ? "run" : ""}`}
+            style={{ ["--accent" as string]: spec.accent }}
+          >
+            <div
+              className="sv-ex-list"
+              role="tablist"
+              aria-label="Fintech specialties"
+            >
+              {FINTECH.map((f, i) => (
+                <button
+                  key={f.title}
+                  role="tab"
+                  aria-selected={i === active}
+                  className={`sv-ex-item ${i === active ? "on" : ""}`}
+                  style={{ ["--accent" as string]: f.accent }}
+                  onClick={() => setActive(i)}
                 >
-                  <div className="flip-inner">
-                    <div className="flip-face flip-front">
-                      <div>
-                        <div className="svc-icon">{s.icon}</div>
-                        <div className="svc-title">{s.title}</div>
-                      </div>
-                      <div className="flip-hint">// tap for details</div>
+                  <span className="sv-ex-icon">{f.icon}</span>
+                  <span className="sv-ex-text">
+                    <b>{f.title}</b>
+                    <span>{f.tags.join(" · ")}</span>
+                  </span>
+                  {i === active && (
+                    <span
+                      key={`p-${active}`}
+                      className="sv-ex-progress"
+                      onAnimationEnd={() =>
+                        setActive((a) => (a + 1) % FINTECH.length)
+                      }
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <div className="sv-ex-stage">
+              <div className="sv-ex-glow" />
+              <div className="sv-ex-phone" key={spec.kind}>
+                <div className="sv-ex-notch" />
+                <SpecScreen kind={spec.kind} />
+              </div>
+              <div className="sv-ex-info" key={`i-${spec.kind}`}>
+                <div className="sv-ex-info-icon">{spec.icon}</div>
+                <h3>{spec.title}</h3>
+                <p>{spec.desc}</p>
+                <div className="svc-tags">
+                  {spec.tags.map((t) => (
+                    <span key={t} className="svc-tag">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <Link
+                  to="/contact"
+                  className="link-arrow"
+                  style={{ marginTop: 20 }}
+                >
+                  Build one with us <span>→</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SHIPPED BY DEFAULT ── */}
+      <section className="sec sv-defaults-bg">
+        <div className="sec-in">
+          <div className="sv-defaults-head">
+            <div>
+              <Reveal>
+                <div className="eyebrow">included by default</div>
+              </Reveal>
+              <Reveal delay={80}>
+                <h2 className="sec-h2">
+                  Every build ships
+                  <br />
+                  <span className="tg">production-grade.</span>
+                </h2>
+              </Reveal>
+            </div>
+            <Reveal delay={140}>
+              <p className="sec-sub">
+                Fintech is unforgiving. These aren't upsells — they're the
+                baseline for anything that moves money.
+              </p>
+            </Reveal>
+          </div>
+
+          <div className="sv-defaults">
+            {DEFAULTS.map((d, i) => (
+              <Reveal key={d.t} delay={i * 70}>
+                <div className="sv-def">
+                  <div className="sv-def-icon">{d.icon}</div>
+                  <div>
+                    <div className="sv-def-t">
+                      {d.t} <span className="sv-def-check">✓</span>
                     </div>
-                    <div className="flip-face flip-back">
-                      <div className="svc-title" style={{ color: "#fff" }}>
-                        {s.title}
-                      </div>
-                      <div className="flip-back-desc" style={{ marginTop: 8 }}>
-                        {s.desc}
-                      </div>
-                      <div className="svc-tags">
-                        {s.tags.map((t) => (
-                          <span
-                            key={t}
-                            className="svc-tag"
-                            style={{
-                              background: "rgba(255,255,255,.08)",
-                              color: "#a8b6cc",
-                            }}
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                    <div className="sv-def-d">{d.d}</div>
                   </div>
                 </div>
               </Reveal>
@@ -388,24 +639,79 @@ export default function Services() {
             </h2>
           </Reveal>
 
-          <div className="pipe-wrap">
-            <div className="pipe-glow" />
-            {PROCESS.map((_, i) => (
-              <div
-                key={i}
-                className="pipe-node"
-                style={{ left: `${(i / (PROCESS.length - 1)) * 100}%` }}
-              />
-            ))}
-          </div>
-
-          <div className="process-grid" style={{ marginTop: 0 }}>
-            {PROCESS.map((p, i) => (
-              <Reveal key={p.n} delay={i * 90}>
-                <div className="process-card">
-                  <div className="process-n">{p.n}</div>
+          <div ref={procRef} className={`sv-proc ${procInView ? "run" : ""}`}>
+            <div className="sv-pipe">
+              <div className="sv-pipe-fill" />
+              <div className="sv-pipe-glow" />
+              {PROCESS.map((_, i) => (
+                <div
+                  key={i}
+                  className="sv-pipe-node"
+                  style={{
+                    left: `${(i / (PROCESS.length - 1)) * 100}%`,
+                    ["--i" as string]: i,
+                  }}
+                />
+              ))}
+            </div>
+            <div className="process-grid" style={{ marginTop: 0 }}>
+              {PROCESS.map((p, i) => (
+                <div
+                  key={p.n}
+                  className="process-card sv-proc-card"
+                  style={{ ["--i" as string]: i }}
+                >
+                  <div className="sv-proc-n">{p.n}</div>
                   <div className="process-t">{p.t}</div>
                   <div className="process-d">{p.d}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section className="sec sv-faq-bg">
+        <div className="sec-in sv-faq-grid">
+          <div>
+            <Reveal>
+              <div className="eyebrow">faq</div>
+            </Reveal>
+            <Reveal delay={80}>
+              <h2 className="sec-h2">
+                Questions,
+                <br />
+                <span className="tg">answered.</span>
+              </h2>
+            </Reveal>
+            <Reveal delay={140}>
+              <p className="sec-sub">
+                Still curious?{" "}
+                <Link to="/contact" className="sv-inline-link">
+                  Talk to us
+                </Link>{" "}
+                — we reply fast.
+              </p>
+            </Reveal>
+          </div>
+          <div className="sv-faq">
+            {FAQS.map((f, i) => (
+              <Reveal key={f.q} delay={i * 60}>
+                <div className={`sv-faq-item ${openFaq === i ? "open" : ""}`}>
+                  <button
+                    className="sv-faq-q"
+                    aria-expanded={openFaq === i}
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  >
+                    <span>{f.q}</span>
+                    <i aria-hidden>+</i>
+                  </button>
+                  <div className="sv-faq-a">
+                    <div>
+                      <p>{f.a}</p>
+                    </div>
+                  </div>
                 </div>
               </Reveal>
             ))}
@@ -413,6 +719,7 @@ export default function Services() {
         </div>
       </section>
 
+      {/* ── CTA ── */}
       <section className="cta-strip">
         <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
           <AlgorithmCanvas intensity="low" />
@@ -426,9 +733,14 @@ export default function Services() {
             </h2>
           </Reveal>
           <Reveal delay={100}>
-            <Link to="/work" className="btn-p" style={{ marginTop: 28 }}>
-              View our work →
-            </Link>
+            <div className="sv-cta-btns">
+              <Link to="/work" className="btn-p sv-btn-glow">
+                View our work →
+              </Link>
+              <Link to="/contact" className="btn-s sv-btn-ghost">
+                Start a project
+              </Link>
+            </div>
           </Reveal>
         </div>
       </section>

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import AlgorithmCanvas from "../components/AlgorithmCanvas";
 import Reveal from "../components/Reveal";
-import MagCard from "../components/MagCard";
 import Typed from "../components/Typed";
 import PhoneFrame from "../components/PhoneFrame";
 import SEO from "../components/SEO";
@@ -22,72 +21,47 @@ import bvnLogo from "../assets/logos/bvn.jpeg";
 import ninLogo from "../assets/logos/nin.jpeg";
 import cbnLogo from "../assets/logos/cbn.png";
 import OrganizationSchema from "../components/OrganizationSchema";
+import SpecScreen, { type SpecKind } from "../components/SpecScreen";
+import StackWall from "../components/StackWall";
+import "../styles/home.css";
 
 const GT = ({ c }: { c: string }) => <span className="tg">{c}</span>;
 
-const SERVICE_TEASE = [
+const SERVICE_TEASE: {
+  icon: string;
+  title: string;
+  desc: string;
+  tags: string[];
+  kind: SpecKind;
+  accent: string;
+}[] = [
   {
     icon: "◆",
     title: "Neobank & MFB Apps",
     desc: "Digital banking interfaces for microfinance banks and neobanks — accounts, cards, and statements people actually trust.",
+    tags: ["Accounts", "Cards", "Statements"],
+    kind: "bank",
+    accent: "#2F8FFF",
   },
   {
     icon: "▣",
     title: "Wallets & Payments",
     desc: "Balance cards, transfers, and transaction flows built around how people actually move money.",
+    tags: ["Wallets", "Transfers", "Payouts"],
+    kind: "wallet",
+    accent: "#00D9B4",
   },
   {
     icon: "◈",
     title: "VTU & Bills Platforms",
     desc: "Airtime, data, electricity, and cable subscriptions — one-tap bill payment experiences.",
+    tags: ["Airtime & Data", "Electricity", "Cable TV"],
+    kind: "vtu",
+    accent: "#F59E0B",
   },
 ];
 
-const STACK_ROWS = [
-  {
-    label: "Mobile",
-    dir: "left" as const,
-    duration: 34,
-    tools: [
-      "React Native",
-      "Flutter",
-      "Swift",
-      "SwiftUI",
-      "Kotlin",
-      "Expo",
-      "EAS",
-      "CodePush",
-    ],
-  },
-  {
-    label: "Web & Backend",
-    dir: "right" as const,
-    duration: 42,
-    tools: [
-      "React",
-      "TypeScript",
-      "JavaScript",
-      "Node.js",
-      "Express",
-      "Python",
-      "Go",
-    ],
-  },
-  {
-    label: "Fintech Infrastructure",
-    dir: "left" as const,
-    duration: 38,
-    tools: [
-      "Paystack",
-      "Flutterwave",
-      "Mono",
-      "Okra",
-      "NIBSS",
-      "Firebase",
-      "PostgreSQL",
-    ],
-  },
-];
+const HERO_RAILS = ["Paystack", "Flutterwave", "Interswitch", "NIBSS", "Stripe"];
 
 const BUILD_STEPS = [
   {
@@ -471,16 +445,19 @@ const RAIL_NODES: {
 
 const ORBIT_LEGEND = [
   {
+    key: "payments" as RailCategory,
     label: "Payments",
     color: "#00d9b4",
     items: "Paystack · Flutterwave · Interswitch · Stripe",
   },
   {
+    key: "bills" as RailCategory,
     label: "Bills & BaaS",
     color: "#2f8fff",
     items: "Nomba · VTpass · Safe Haven · MTN MoMo",
   },
   {
+    key: "settlement" as RailCategory,
     label: "Settlement & Compliance",
     color: "#f5c451",
     items: "NIBSS · BVN · NIN · CBN",
@@ -502,7 +479,7 @@ function RailLogoImg({ name, src }: { name: string; src: string }) {
   );
 }
 
-function FlowNetwork() {
+function FlowNetwork({ focus = null }: { focus?: RailCategory | null }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const R = 40;
 
@@ -540,18 +517,19 @@ function FlowNetwork() {
             const pathId = `rail-path-${n.key}`;
             const dur = 2.6 + (i % 4) * 0.6;
             const delay = (i * 0.28).toFixed(2);
-            const active = hovered === n.key;
+            const active = hovered === n.key || focus === n.category;
+            const dim = focus !== null && focus !== n.category;
             return (
               <g key={n.key}>
                 <path
                   id={pathId}
                   d={`M ${x1} ${y1} Q ${cx} ${cy} 50 50`}
-                  className={`railflow-path${active ? " is-active" : ""}`}
+                  className={`railflow-path${active ? " is-active" : ""}${dim ? " is-dim" : ""}`}
                   style={{ ["--rail-color" as string]: n.color }}
                 />
                 <circle
                   r={active ? 1.7 : 1.2}
-                  className="railflow-pulse"
+                  className={`railflow-pulse${dim ? " is-dim" : ""}`}
                   style={{ ["--rail-color" as string]: n.color }}
                 >
                   <animateMotion
@@ -576,7 +554,7 @@ function FlowNetwork() {
           return (
             <div
               key={n.key}
-              className={`railflow-node${hovered === n.key ? " is-active" : ""}`}
+              className={`railflow-node${hovered === n.key || focus === n.category ? " is-active" : ""}${focus !== null && focus !== n.category ? " is-dim" : ""}`}
               style={{
                 left: `${left}%`,
                 top: `${top}%`,
@@ -605,6 +583,21 @@ function FlowNetwork() {
 
 export default function Home() {
   const featured = PROJECTS.slice(0, 3);
+  const heroRef = useRef<HTMLElement | null>(null);
+  const [teaseActive, setTeaseActive] = useState(1);
+  const [railFocus, setRailFocus] = useState<RailCategory | null>(null);
+
+  const onHeroMove = (e: React.MouseEvent<HTMLElement>) => {
+    const el = heroRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    el.style.setProperty("--hx", `${x}px`);
+    el.style.setProperty("--hy", `${y}px`);
+    el.style.setProperty("--px", ((x / r.width) * 2 - 1).toFixed(3));
+    el.style.setProperty("--py", ((y / r.height) * 2 - 1).toFixed(3));
+  };
 
   return (
     <>
@@ -615,9 +608,12 @@ export default function Home() {
         path="/"
       />
       <OrganizationSchema />
-      <section className="hero">
+      <section className="hero hm-hero" ref={heroRef} onMouseMove={onHeroMove}>
         <AlgorithmCanvas />
         <div className="hero-scrim" />
+        <div className="hm-blob b1" />
+        <div className="hm-blob b2" />
+        <div className="hm-spot" />
 
         <div className="hero-inner">
           <div>
@@ -636,7 +632,7 @@ export default function Home() {
             >
               We design &amp; engineer
               <br />
-              <GT c="fintechs" />.
+              <span className="tg hm-shimmer">fintechs</span>.
             </h1>
             <p
               className="hero-sub"
@@ -650,7 +646,7 @@ export default function Home() {
               className="hero-btns"
               style={{ animation: "fadeUp .7s ease .45s both" }}
             >
-              <Link className="btn-p" to="/work">
+              <Link className="btn-p hm-shine" to="/work">
                 See our work →
               </Link>
               <Link className="btn-s" to="/contact">
@@ -672,697 +668,479 @@ export default function Home() {
                 </span>
               ))}
             </div>
+            <div
+              className="hm-rails"
+              style={{ animation: "fadeUp .7s ease .7s both" }}
+            >
+              <span className="hm-rails-label">integrated with</span>
+              <div className="hm-rails-logos">
+                {HERO_RAILS.map((r) => (
+                  <span key={r} className="hm-rail">
+                    {r}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div
-            className="hero-right-col"
+            className="hm-stage"
             style={{ animation: "fadeUp .8s ease .4s both" }}
           >
-            <MagCard>
-              <div className="terminal">
-                <div className="term-bar">
-                  <div className="term-dot" style={{ background: "#FF5F57" }} />
-                  <div className="term-dot" style={{ background: "#FEBC2E" }} />
-                  <div className="term-dot" style={{ background: "#28C840" }} />
-                  <span className="term-title">
-                    kyvolab — wallet.service.ts
-                  </span>
+            <div className="hm-layer hm-layer-term">
+                <div className="terminal">
+                  <div className="term-bar">
+                    <div className="term-dot" style={{ background: "#FF5F57" }} />
+                    <div className="term-dot" style={{ background: "#FEBC2E" }} />
+                    <div className="term-dot" style={{ background: "#28C840" }} />
+                    <span className="term-title">
+                      kyvolab — wallet.service.ts
+                    </span>
+                  </div>
+                  <div className="term-body">
+                    <div>
+                      <span className="tc-dim">01 </span>
+                      <span className="tc-blue">import</span>{" "}
+                      <span className="tc-white">{"{ Injectable }"}</span>{" "}
+                      <span className="tc-blue">from</span>{" "}
+                      <span className="tc-green">'@nestjs/common'</span>
+                      <span className="tc-dim">;</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">02 </span>
+                      <span className="tc-blue">import</span>{" "}
+                      <span className="tc-white">{"{ DataSource }"}</span>{" "}
+                      <span className="tc-blue">from</span>{" "}
+                      <span className="tc-green">'typeorm'</span>
+                      <span className="tc-dim">;</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">03 </span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">04 </span>
+                      <span className="tc-teal">@Injectable</span>
+                      <span className="tc-white">()</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">05 </span>
+                      <span className="tc-blue">export class</span>{" "}
+                      <span className="tc-yellow">WalletService</span>{" "}
+                      <span className="tc-white">{"{"}</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">06 </span>{" "}
+                      <span className="tc-blue">constructor</span>
+                      <span className="tc-white">(</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">07 </span>{" "}
+                      <span className="tc-blue">private readonly</span>{" "}
+                      <span className="tc-white">db: </span>
+                      <span className="tc-yellow">DataSource</span>
+                      <span className="tc-dim">,</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">08 </span>{" "}
+                      <span className="tc-white">) {"{}"}</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">09 </span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">10 </span>{" "}
+                      <span className="tc-comment">
+                        {"// atomic transfer with row lock"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">11 </span>{" "}
+                      <span className="tc-blue">async</span>{" "}
+                      <span className="tc-teal">transfer</span>
+                      <span className="tc-white">(from, to, amt) {"{"}</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">12 </span>{" "}
+                      <span className="tc-blue">return await</span>{" "}
+                      <span className="tc-white">this.db.</span>
+                      <span className="tc-teal">transaction</span>
+                      <span className="tc-white">(</span>
+                      <span className="tc-blue">async</span>{" "}
+                      <span className="tc-white">
+                        mgr {"=>"} {"{"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">13 </span>{" "}
+                      <span className="tc-blue">const</span>{" "}
+                      <span className="tc-white">s = </span>
+                      <span className="tc-blue">await</span>{" "}
+                      <span className="tc-white">mgr.</span>
+                      <span className="tc-teal">findWithLock</span>
+                      <span className="tc-white">(from);</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">14 </span>{" "}
+                      <span className="tc-blue">if</span>{" "}
+                      <span className="tc-white">(s.balance {"<"} amt) </span>
+                      <span className="tc-blue">throw new</span>{" "}
+                      <span className="tc-yellow">InsufficientFunds</span>
+                      <span className="tc-white">();</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">15 </span>{" "}
+                      <span className="tc-blue">await</span>{" "}
+                      <span className="tc-white">mgr.</span>
+                      <span className="tc-teal">debit</span>
+                      <span className="tc-white">(from, amt);</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">16 </span>{" "}
+                      <span className="tc-blue">await</span>{" "}
+                      <span className="tc-white">mgr.</span>
+                      <span className="tc-teal">credit</span>
+                      <span className="tc-white">(to, amt);</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">17 </span>{" "}
+                      <span className="tc-white">{"});"}</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">18 </span>{" "}
+                      <span className="tc-white">{"}"}</span>
+                    </div>
+                    <div>
+                      <span className="tc-dim">19 </span>
+                      <span className="tc-white">{"}"}</span>
+                    </div>
+                    <div style={{ marginTop: 8 }}>
+                      <span className="tc-dim">▶ </span>
+                      <span className="tc-teal">
+                        <Typed
+                          strings={[
+                            "Transfer committed in 1.2s",
+                            "✓ Wallet debited & credited atomically",
+                            "✓ Build passing — 0 errors",
+                          ]}
+                          speed={45}
+                        />
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="term-body">
-                  <div>
-                    <span className="tc-dim">01 </span>
-                    <span className="tc-blue">import</span>{" "}
-                    <span className="tc-white">{"{ Injectable }"}</span>{" "}
-                    <span className="tc-blue">from</span>{" "}
-                    <span className="tc-green">'@nestjs/common'</span>
-                    <span className="tc-dim">;</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">02 </span>
-                    <span className="tc-blue">import</span>{" "}
-                    <span className="tc-white">{"{ DataSource }"}</span>{" "}
-                    <span className="tc-blue">from</span>{" "}
-                    <span className="tc-green">'typeorm'</span>
-                    <span className="tc-dim">;</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">03 </span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">04 </span>
-                    <span className="tc-teal">@Injectable</span>
-                    <span className="tc-white">()</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">05 </span>
-                    <span className="tc-blue">export class</span>{" "}
-                    <span className="tc-yellow">WalletService</span>{" "}
-                    <span className="tc-white">{"{"}</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">06 </span>{" "}
-                    <span className="tc-blue">constructor</span>
-                    <span className="tc-white">(</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">07 </span>{" "}
-                    <span className="tc-blue">private readonly</span>{" "}
-                    <span className="tc-white">db: </span>
-                    <span className="tc-yellow">DataSource</span>
-                    <span className="tc-dim">,</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">08 </span>{" "}
-                    <span className="tc-white">) {"{}"}</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">09 </span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">10 </span>{" "}
-                    <span className="tc-comment">
-                      {"// atomic transfer with row lock"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">11 </span>{" "}
-                    <span className="tc-blue">async</span>{" "}
-                    <span className="tc-teal">transfer</span>
-                    <span className="tc-white">(from, to, amt) {"{"}</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">12 </span>{" "}
-                    <span className="tc-blue">return await</span>{" "}
-                    <span className="tc-white">this.db.</span>
-                    <span className="tc-teal">transaction</span>
-                    <span className="tc-white">(</span>
-                    <span className="tc-blue">async</span>{" "}
-                    <span className="tc-white">
-                      mgr {"=>"} {"{"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">13 </span>{" "}
-                    <span className="tc-blue">const</span>{" "}
-                    <span className="tc-white">s = </span>
-                    <span className="tc-blue">await</span>{" "}
-                    <span className="tc-white">mgr.</span>
-                    <span className="tc-teal">findWithLock</span>
-                    <span className="tc-white">(from);</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">14 </span>{" "}
-                    <span className="tc-blue">if</span>{" "}
-                    <span className="tc-white">(s.balance {"<"} amt) </span>
-                    <span className="tc-blue">throw new</span>{" "}
-                    <span className="tc-yellow">InsufficientFunds</span>
-                    <span className="tc-white">();</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">15 </span>{" "}
-                    <span className="tc-blue">await</span>{" "}
-                    <span className="tc-white">mgr.</span>
-                    <span className="tc-teal">debit</span>
-                    <span className="tc-white">(from, amt);</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">16 </span>{" "}
-                    <span className="tc-blue">await</span>{" "}
-                    <span className="tc-white">mgr.</span>
-                    <span className="tc-teal">credit</span>
-                    <span className="tc-white">(to, amt);</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">17 </span>{" "}
-                    <span className="tc-white">{"});"}</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">18 </span>{" "}
-                    <span className="tc-white">{"}"}</span>
-                  </div>
-                  <div>
-                    <span className="tc-dim">19 </span>
-                    <span className="tc-white">{"}"}</span>
-                  </div>
-                  <div style={{ marginTop: 8 }}>
-                    <span className="tc-dim">▶ </span>
-                    <span className="tc-teal">
-                      <Typed
-                        strings={[
-                          "Transfer committed in 1.2s",
-                          "✓ Wallet debited & credited atomically",
-                          "✓ Build passing — 0 errors",
-                        ]}
-                        speed={45}
-                      />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </MagCard>
+              
+            </div>
 
-            <div
-              className="stat-card"
-              style={{
-                bottom: -18,
-                left: -32,
-                animation: "float 7s ease-in-out infinite",
-              }}
-            >
-              <div
-                className="stat-card-l"
-                style={{
-                  fontFamily: "Fira Code, monospace",
-                  color: "#00D9B4",
-                  marginBottom: 3,
-                }}
-              >
-                ● build.status
-              </div>
-              <div className="stat-card-n" style={{ fontSize: 18 }}>
-                passing
+            <div className="hm-layer hm-layer-phone">
+              <div className="hm-phone">
+                <div className="hm-phone-notch" />
+                <SpecScreen kind="wallet" />
               </div>
             </div>
-            <div
-              className="stat-card"
-              style={{
-                top: -14,
-                right: -24,
-                animation: "float 9s ease-in-out 1s infinite",
-              }}
-            >
-              <div
-                className="stat-card-l"
-                style={{
-                  fontFamily: "Fira Code, monospace",
-                  color: "#2F8FFF",
-                  marginBottom: 3,
-                }}
-              >
-                figma → production
+
+            <div className="hm-layer hm-layer-float f1">
+              <div className="hm-float">
+                <span className="hm-float-ico ok">✓</span>
+                <div>
+                  <div className="hm-float-l">build.status</div>
+                  <div className="hm-float-n">passing</div>
+                </div>
               </div>
-              <div className="stat-card-n" style={{ fontSize: 18 }}>
-                live preview
+            </div>
+            <div className="hm-layer hm-layer-float f2">
+              <div className="hm-float">
+                <span className="hm-float-ico in">↓</span>
+                <div>
+                  <div className="hm-float-l">transfer received</div>
+                  <div className="hm-float-n">+₦25,000</div>
+                </div>
+              </div>
+            </div>
+            <div className="hm-layer hm-layer-float f3">
+              <div className="hm-float">
+                <span className="hm-float-ico kyc">◉</span>
+                <div>
+                  <div className="hm-float-l">kyc.bvn</div>
+                  <div className="hm-float-n">verified</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        <a href="#what-we-build" className="hm-scroll" aria-label="Scroll to services">
+          <span />
+        </a>
       </section>
 
       {/* ── SERVICES TEASE ── */}
-      <section className="sec svc-tease-bg">
+      <section className="sec hm-tease" id="what-we-build">
+        <div className="hm-tease-aurora" />
         <div className="sec-in">
-          <Reveal>
-            <div className="eyebrow">what we build</div>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 className="sec-h2">
-              Design and engineering,
-              <br />
-              <GT c="under one roof." />
-            </h2>
-          </Reveal>
-          <div className="tease-grid">
-            {SERVICE_TEASE.map((s, i) => (
-              <Reveal key={s.title} delay={i * 70}>
-                <MagCard cls="tease-card">
-                  <div className="tease-icon">{s.icon}</div>
-                  <div className="tease-title">{s.title}</div>
-                  <div className="tease-desc">{s.desc}</div>
-                </MagCard>
+          <div className="hm-tease-head">
+            <div>
+              <Reveal>
+                <div className="eyebrow">what we build</div>
               </Reveal>
-            ))}
+              <Reveal delay={80}>
+                <h2 className="sec-h2" style={{ color: "#fff" }}>
+                  Design and engineering,
+                  <br />
+                  <GT c="under one roof." />
+                </h2>
+              </Reveal>
+            </div>
+            <Reveal delay={140}>
+              <div className="hm-tease-side">
+                <p className="sec-sub">
+                  From the first sketch to the production build — the three
+                  product types we ship most. Tap or hover to look inside.
+                </p>
+                <Link to="/services" className="link-arrow hm-tease-link">
+                  See all services →
+                </Link>
+              </div>
+            </Reveal>
           </div>
-          <Reveal delay={220}>
-            <Link to="/services" className="link-arrow">
-              See all services →
-            </Link>
+
+          <Reveal delay={180}>
+            <div className="hm-panels">
+              {SERVICE_TEASE.map((s, i) => {
+                const on = i === teaseActive;
+                return (
+                  <div
+                    key={s.title}
+                    className={`hm-panel ${on ? "on" : ""}`}
+                    style={{ ["--accent" as string]: s.accent }}
+                    onMouseEnter={() => setTeaseActive(i)}
+                    onClick={() => setTeaseActive(i)}
+                    onFocus={() => setTeaseActive(i)}
+                    tabIndex={0}
+                    role="button"
+                    aria-expanded={on}
+                  >
+                    <div className="hm-panel-glow" />
+                    <div className="hm-panel-top">
+                      <span className="hm-panel-idx">0{i + 1}</span>
+                      <span className="hm-panel-icon">{s.icon}</span>
+                    </div>
+                    <div className="hm-panel-vtitle">{s.title}</div>
+                    <div className="hm-panel-body">
+                      <div className="hm-panel-copy">
+                        <h3 className="hm-panel-title">{s.title}</h3>
+                        <p className="hm-panel-desc">{s.desc}</p>
+                        <div className="ptags">
+                          {s.tags.map((t) => (
+                            <span key={t} className="ptag">{t}</span>
+                          ))}
+                        </div>
+                        <Link to="/services#specialties" className="hm-panel-cta">
+                          Explore <span>→</span>
+                        </Link>
+                      </div>
+                      {on && (
+                        <div className="hm-panel-phone" key={s.kind}>
+                          <div className="hm-phone-notch" />
+                          <SpecScreen kind={s.kind} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </Reveal>
         </div>
       </section>
 
       {/* ── STACK ── */}
-      <section className="sec">
-        <style>{`
-          @keyframes marqueeLeft { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-          @keyframes marqueeRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
-          .marquee-row {
-            overflow: hidden;
-            position: relative;
-            -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
-            mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
-            padding: 6px 0;
-          }
-          .marquee-track {
-            display: flex;
-            width: max-content;
-            gap: 14px;
-            will-change: transform;
-          }
-          .marquee-row:hover .marquee-track { animation-play-state: paused; }
-          .stack-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            padding: 11px 18px;
-            border-radius: 11px;
-            background: #0b0f1a;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            font-family: "Fira Code", monospace;
-            font-size: 13.5px;
-            color: #e2e8f0;
-            white-space: nowrap;
-            box-shadow: 0 6px 18px rgba(8, 15, 30, 0.12);
-            transition: border-color 0.2s, transform 0.2s;
-          }
-          .stack-chip:hover { border-color: rgba(0, 217, 180, 0.45); transform: translateY(-2px); }
-          .stack-chip .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #00d9b4, #2f8fff);
-            flex-shrink: 0;
-          }
-          .stack-row-label {
-            font-family: "Fira Code", monospace;
-            font-size: 11px;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: #6a8da8;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-          }
-          .stack-row-label::before { content: "//"; color: rgba(0, 217, 180, 0.4); }
-          .stack-row-wrap { margin-bottom: 34px; }
-        `}</style>
-
+      <section className="sec hm-stack">
         <div className="sec-in">
-          <Reveal>
-            <div className="eyebrow">stack.list()</div>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 className="sec-h2">
-              Tools we build
-              <br />
-              <GT c="fintech products with." />
-            </h2>
-          </Reveal>
-          <Reveal delay={140}>
-            <p className="sec-sub" style={{ marginBottom: 44 }}>
-              Native and cross-platform mobile, a modern web/backend toolchain,
-              and the payments infrastructure fintech apps actually run on.
-            </p>
-          </Reveal>
-
-          {STACK_ROWS.map((row, i) => (
-            <Reveal key={row.label} delay={i * 90}>
-              <div className="stack-row-wrap">
-                <div className="stack-row-label">{row.label}</div>
-                <div className="marquee-row">
-                  <div
-                    className="marquee-track"
-                    style={{
-                      animation: `${row.dir === "left" ? "marqueeLeft" : "marqueeRight"} ${row.duration}s linear infinite`,
-                    }}
-                  >
-                    {[...row.tools, ...row.tools].map((t, idx) => (
-                      <div className="stack-chip" key={`${t}-${idx}`}>
-                        <span className="dot" />
-                        {t}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+          <div className="hm-sec-head">
+            <div>
+              <Reveal>
+                <div className="eyebrow">stack.list()</div>
+              </Reveal>
+              <Reveal delay={80}>
+                <h2 className="sec-h2">
+                  Tools we build
+                  <br />
+                  <GT c="fintech products with." />
+                </h2>
+              </Reveal>
+            </div>
+            <Reveal delay={140}>
+              <p className="sec-sub">
+                Native and cross-platform mobile, a modern web/backend toolchain,
+                and the payments infrastructure fintech apps actually run on.
+              </p>
             </Reveal>
-          ))}
+          </div>
+
+          <Reveal delay={160}>
+            <StackWall />
+          </Reveal>
         </div>
       </section>
 
       {/* ── PROCESS (live build console) ── */}
-      <section className="sec">
-        <style>{`
-          .dev-console-grid {
-            display: grid;
-            grid-template-columns: 1.3fr 1fr;
-            gap: 24px;
-            align-items: start;
-          }
-          @media (max-width: 820px) {
-            .dev-console-grid { grid-template-columns: 1fr; }
-          }
-          .dev-terminal { margin: 0; }
-          .dev-term-body {
-            min-height: 230px;
-            font-size: 13.5px;
-            line-height: 1.75;
-          }
-          .dev-progress-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 4px;
-          }
-          .dev-progress-track {
-            flex: 1;
-            height: 6px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.08);
-            overflow: hidden;
-          }
-          .dev-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00d9b4, #2f8fff);
-          }
-          .dev-progress-pct {
-            font-family: "Fira Code", monospace;
-            font-size: 11px;
-            width: 34px;
-            text-align: right;
-          }
-          .dev-cursor-line { margin-top: 2px; }
-          .dev-cursor-line span {
-            animation: devBlink 1s step-end infinite;
-          }
-          @keyframes devBlink { 50% { opacity: 0; } }
-
-          .dev-graph {
-            background: #0b0f1a;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 24px 22px 24px 20px;
-          }
-          .dev-graph-node { display: flex; gap: 14px; }
-          .dev-graph-rail {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 14px;
-            flex-shrink: 0;
-          }
-          .dev-graph-dot {
-            width: 11px;
-            height: 11px;
-            border-radius: 50%;
-            background: transparent;
-            border: 2px solid rgba(255, 255, 255, 0.18);
-            margin-top: 3px;
-            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-          }
-          .dev-graph-node.is-active .dev-graph-dot {
-            background: #00d9b4;
-            border-color: #00d9b4;
-            animation: devNodePulse 1.2s ease-in-out infinite;
-          }
-          .dev-graph-node.is-done .dev-graph-dot {
-            background: #00d9b4;
-            border-color: #00d9b4;
-          }
-          @keyframes devNodePulse {
-            0%, 100% { box-shadow: 0 0 0 4px rgba(0, 217, 180, 0.16); }
-            50% { box-shadow: 0 0 0 8px rgba(0, 217, 180, 0.26); }
-          }
-          .dev-graph-line {
-            width: 1.5px;
-            flex: 1;
-            background: rgba(255, 255, 255, 0.12);
-            margin: 4px 0;
-            transition: background 0.3s ease;
-          }
-          .dev-graph-node.is-done .dev-graph-line { background: rgba(0, 217, 180, 0.4); }
-          .dev-graph-info { padding-bottom: 24px; }
-          .dev-graph-node:last-child .dev-graph-info { padding-bottom: 0; }
-          .dev-graph-hash {
-            font-family: "Fira Code", monospace;
-            font-size: 10.5px;
-            color: #6a8da8;
-            margin-bottom: 3px;
-          }
-          .dev-graph-title {
-            font-size: 14.5px;
-            font-weight: 600;
-            color: #e2e8f0;
-            transition: color 0.3s ease;
-          }
-          .dev-graph-node.is-active .dev-graph-title,
-          .dev-graph-node.is-done .dev-graph-title {
-            color: #00d9b4;
-          }
-          @media (prefers-reduced-motion: reduce) {
-            .dev-cursor-line span { animation: none; }
-            .dev-graph-node.is-active .dev-graph-dot { animation: none; }
-          }
-        `}</style>
-
+      <section className="sec hm-process">
+        <div className="hm-process-grid-bg" />
+        <div className="hm-process-aurora" />
         <div className="sec-in">
-          <Reveal>
-            <div className="eyebrow">build.log()</div>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 className="sec-h2">
-              Watch it
-              <br />
-              <GT c="actually get built." />
-            </h2>
-          </Reveal>
-          <Reveal delay={140}>
-            <p className="sec-sub" style={{ marginBottom: 40 }}>
-              No buzzword slide — this is roughly what a project's commit
-              history looks like from kickoff to production.
-            </p>
-          </Reveal>
+          <div className="hm-sec-head">
+            <div>
+              <Reveal>
+                <div className="eyebrow">build.log()</div>
+              </Reveal>
+              <Reveal delay={80}>
+                <h2 className="sec-h2" style={{ color: "#fff" }}>
+                  Watch it
+                  <br />
+                  <GT c="actually get built." />
+                </h2>
+              </Reveal>
+            </div>
+            <Reveal delay={140}>
+              <div className="hm-process-side">
+                <span className="hm-live">
+                  <i /> live pipeline
+                </span>
+                <p className="sec-sub">
+                  No buzzword slide — this is roughly what a project's commit
+                  history looks like from kickoff to production.
+                </p>
+              </div>
+            </Reveal>
+          </div>
 
           <Reveal delay={180}>
-            <DevBuildConsole />
+            <div className="hm-console-wrap">
+              <div className="hm-console-glow" />
+              <DevBuildConsole />
+            </div>
           </Reveal>
         </div>
       </section>
 
       {/* ── INTEGRATIONS / RAILS ── */}
-      <section className="sec">
-        <style>{`
-          .railflow-outer { display: flex; justify-content: center; margin-top: 8px; }
-          .railflow-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            aspect-ratio: 1 / 1;
-          }
-          .railflow-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+      <section className="sec hm-rails-sec">
+        <div className="sec-in hm-rails-grid">
+          <div>
+            <Reveal>
+              <div className="eyebrow">network.map()</div>
+            </Reveal>
+            <Reveal delay={80}>
+              <h2 className="sec-h2">
+                Every rail your app needs,
+                <br />
+                <GT c="already wired in." />
+              </h2>
+            </Reveal>
+            <Reveal delay={140}>
+              <p className="sec-sub">
+                Payments, bills, verification, and settlement — the infrastructure
+                layer, so you can focus on the product.
+              </p>
+            </Reveal>
 
-          .railflow-hub-glow {
-            transform-origin: 50px 50px;
-            animation: railHubPulse 3s ease-in-out infinite;
-          }
-          @keyframes railHubPulse {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 0.85; transform: scale(1.18); }
-          }
-
-          .railflow-path {
-            fill: none;
-            stroke: var(--rail-color);
-            stroke-width: 0.55;
-            stroke-linecap: round;
-            opacity: 0.35;
-            stroke-dasharray: 1.2 2.6;
-            animation: railFlowDash 1.3s linear infinite;
-            transition: opacity 0.25s ease, stroke-width 0.25s ease;
-          }
-          .railflow-path.is-active { opacity: 0.95; stroke-width: 0.9; }
-          @keyframes railFlowDash { to { stroke-dashoffset: -38; } }
-
-          .railflow-pulse {
-            fill: var(--rail-color);
-            filter: drop-shadow(0 0 2.5px var(--rail-color));
-            opacity: 0.9;
-            transition: r 0.2s ease;
-          }
-
-          .railflow-hub-ring {
-            fill: #0b0f1a;
-            stroke: rgba(0, 217, 180, 0.5);
-            stroke-width: 0.5;
-          }
-
-          .railflow-node {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            z-index: 3;
-          }
-          .railflow-tile {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #f5f7fa;
-            border: 2px solid rgba(255, 255, 255, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            box-shadow: 0 6px 16px rgba(8, 15, 30, 0.35);
-            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-          }
-          .railflow-tile img { width: 68%; height: 68%; object-fit: contain; }
-          .railflow-fallback {
-            font-family: "Fira Code", monospace;
-            font-size: 11px;
-            font-weight: 600;
-            color: #0b0f1a;
-          }
-          .railflow-node.is-active .railflow-tile,
-          .railflow-node:hover .railflow-tile {
-            transform: scale(1.15);
-            border-color: var(--rail-color);
-            box-shadow: 0 0 0 5px rgba(0, 217, 180, 0.16), 0 8px 20px rgba(8, 15, 30, 0.4);
-          }
-          .railflow-node-label {
-            font-family: "Fira Code", monospace;
-            font-size: 9.5px;
-            color: #6a8da8;
-            white-space: nowrap;
-            opacity: 0.9;
-            transition: color 0.25s ease;
-          }
-          .railflow-node.is-active .railflow-node-label,
-          .railflow-node:hover .railflow-node-label {
-            color: var(--rail-color);
-          }
-
-          .railflow-hub {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 4;
-          }
-          .railflow-hub-tile {
-            width: 78px;
-            height: 78px;
-            border-radius: 50%;
-            background: #f5f7fa;
-            border: 2px solid rgba(0, 217, 180, 0.55);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            box-shadow: 0 0 0 6px rgba(0, 217, 180, 0.12), 0 10px 26px rgba(8, 15, 30, 0.45);
-            animation: railHubBreathe 3s ease-in-out infinite;
-          }
-          .railflow-hub-tile img { width: 70%; height: 70%; object-fit: contain; }
-          @keyframes railHubBreathe {
-            0%, 100% { box-shadow: 0 0 0 6px rgba(0, 217, 180, 0.12), 0 10px 26px rgba(8, 15, 30, 0.45); }
-            50% { box-shadow: 0 0 0 10px rgba(0, 217, 180, 0.2), 0 10px 30px rgba(8, 15, 30, 0.5); }
-          }
-
-          .orbit-legend { margin: 40px auto 0; max-width: 560px; }
-          .orbit-legend-row {
-            display: flex;
-            align-items: baseline;
-            gap: 10px;
-            font-family: "Fira Code", monospace;
-            font-size: 12.5px;
-            margin-bottom: 9px;
-          }
-          .orbit-legend-row:last-child { margin-bottom: 0; }
-          .orbit-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; transform: translateY(1px); }
-          .orbit-legend-label { color: #e2e8f0; font-weight: 600; min-width: 190px; }
-          .orbit-legend-items { color: #6a8da8; }
-
-          @media (max-width: 640px) {
-            .railflow-container { max-width: 340px; }
-            .railflow-tile { width: 38px; height: 38px; }
-            .railflow-hub-tile { width: 58px; height: 58px; }
-            .railflow-node-label { display: none; }
-            .orbit-legend-row { flex-direction: column; gap: 3px; margin-bottom: 16px; }
-            .orbit-legend-label { min-width: 0; }
-          }
-          @media (prefers-reduced-motion: reduce) {
-            .railflow-path, .railflow-hub-glow, .railflow-hub-tile { animation: none !important; }
-          }
-        `}</style>
-
-        <div className="sec-in">
-          <Reveal>
-            <div className="eyebrow">network.map()</div>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 className="sec-h2">
-              Every rail your app needs,
-              <br />
-              <GT c="already wired in." />
-            </h2>
-          </Reveal>
-          <Reveal delay={140}>
-            <p className="sec-sub" style={{ marginBottom: 30 }}>
-              Payments, bills, verification, and settlement — the infrastructure
-              layer, so you can focus on the product.
-            </p>
-          </Reveal>
+            <div className="hm-legend">
+              {ORBIT_LEGEND.map((l, i) => (
+                <Reveal key={l.key} delay={200 + i * 80}>
+                  <button
+                    type="button"
+                    className={`hm-legend-card ${railFocus === l.key ? "on" : ""}`}
+                    style={{ ["--rail-color" as string]: l.color }}
+                    onMouseEnter={() => setRailFocus(l.key)}
+                    onMouseLeave={() => setRailFocus(null)}
+                    onFocus={() => setRailFocus(l.key)}
+                    onBlur={() => setRailFocus(null)}
+                    onClick={() => setRailFocus((f) => (f === l.key ? null : l.key))}
+                  >
+                    <span className="hm-legend-dot" />
+                    <span className="hm-legend-text">
+                      <b>{l.label}</b>
+                      <span>{l.items}</span>
+                    </span>
+                    <span className="hm-legend-n">
+                      {RAIL_NODES.filter((n) => n.category === l.key).length}
+                    </span>
+                  </button>
+                </Reveal>
+              ))}
+            </div>
+          </div>
 
           <Reveal delay={180}>
-            <FlowNetwork />
-          </Reveal>
-
-          <Reveal delay={220}>
-            <div className="orbit-legend">
-              {ORBIT_LEGEND.map((l) => (
-                <div className="orbit-legend-row" key={l.label}>
-                  <span
-                    className="orbit-legend-dot"
-                    style={{ background: l.color }}
-                  />
-                  <span className="orbit-legend-label">{l.label}</span>
-                  <span className="orbit-legend-items">{l.items}</span>
-                </div>
-              ))}
+            <div className="hm-net-panel">
+              <div className="hm-net-grid" />
+              <div className="hm-net-radar" />
+              <div className="hm-net-status">
+                <i /> {RAIL_NODES.length} rails connected
+              </div>
+              <FlowNetwork focus={railFocus} />
             </div>
           </Reveal>
         </div>
       </section>
 
       {/* ── FEATURED WORK ── */}
-      <section className="sec">
+      <section className="sec hm-work">
         <div className="sec-in">
-          <Reveal>
-            <div className="eyebrow">selected work</div>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 className="sec-h2">
-              Products we've
-              <br />
-              <GT c="designed & built." />
-            </h2>
-          </Reveal>
-          <Reveal delay={140}>
-            <p className="sec-sub" style={{ marginBottom: 44 }}>
-              A running record of real client work — each one a full rebrand,
-              redesign, or ground-up interface build.
-            </p>
-          </Reveal>
+          <div className="hm-sec-head">
+            <div>
+              <Reveal>
+                <div className="eyebrow">selected work</div>
+              </Reveal>
+              <Reveal delay={80}>
+                <h2 className="sec-h2">
+                  Products we've
+                  <br />
+                  <GT c="designed & built." />
+                </h2>
+              </Reveal>
+            </div>
+            <Reveal delay={140}>
+              <div className="hm-work-side">
+                <p className="sec-sub">
+                  A running record of real client work — each one a full rebrand,
+                  redesign, or ground-up interface build.
+                </p>
+                <Link to="/work" className="link-arrow">
+                  View all work →
+                </Link>
+              </div>
+            </Reveal>
+          </div>
 
-          <div className="feat-grid">
+          <div className="hm-work-grid">
             {featured.map((p, i) => (
-              <Reveal key={p.slug} delay={i * 80}>
+              <Reveal key={p.slug} delay={i * 100} className={i === 0 ? "hm-work-lead" : ""}>
                 <Link
                   to={`/work/${p.slug}`}
-                  className="feat-card"
+                  className={`hm-work-card ${i === 0 ? "lead" : ""}`}
                   style={{ ["--accent" as string]: p.accent }}
                 >
-                  <div className="feat-card-thumb">
+                  <div className="hm-work-thumb">
+                    <div className="hm-work-thumb-glow" />
                     {p.status === "shipped" ? (
-                      <PhoneFrame
-                        src={p.cover}
-                        alt={p.coverAlt}
-                        accent={p.accent}
-                        tilt={i % 2 === 0 ? "left" : "right"}
-                      />
+                      <div className="hm-work-phones">
+                        <PhoneFrame
+                          src={p.cover}
+                          alt={p.coverAlt}
+                          accent={p.accent}
+                          tilt={i % 2 === 0 ? "left" : "right"}
+                        />
+                        {i === 0 && p.gallery[1] && (
+                          <PhoneFrame
+                            src={p.gallery[1].src}
+                            alt={p.gallery[1].alt}
+                            accent={p.accent}
+                            tilt="right"
+                            className="hm-work-phone-2"
+                          />
+                        )}
+                      </div>
                     ) : (
                       <div className="feat-pending">
                         <div className="feat-pending-glyph">＋</div>
@@ -1370,19 +1148,25 @@ export default function Home() {
                       </div>
                     )}
                   </div>
-                  <div className="feat-card-body">
-                    <div className="feat-card-cat">{p.category}</div>
-                    <div className="feat-card-title">{p.name}</div>
+                  <div className="hm-work-body">
+                    <div className="hm-work-meta">
+                      <span className="feat-card-cat">{p.category}</span>
+                      <span className="hm-work-year">{p.year}</span>
+                    </div>
+                    <div className="hm-work-title">{p.name}</div>
                     <div className="feat-card-tag">{p.tagline}</div>
                     <div className="feat-card-foot">
                       <div className="ptags">
-                        {p.role.slice(0, 2).map((t) => (
+                        {p.role.slice(0, i === 0 ? 3 : 2).map((t) => (
                           <div key={t} className="ptag">
                             {t}
                           </div>
                         ))}
                       </div>
-                      <div className="parr">→</div>
+                      <div className="hm-work-cta">
+                        <span>case study</span>
+                        <div className="parr">→</div>
+                      </div>
                     </div>
                   </div>
                 </Link>
@@ -1393,22 +1177,47 @@ export default function Home() {
       </section>
 
       {/* ── CTA STRIP ── */}
-      <section className="cta-strip">
+      <section className="cta-strip hm-cta">
         <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
           <AlgorithmCanvas intensity="low" />
         </div>
+        <div className="hm-cta-marquee" aria-hidden>
+          <div className="hm-cta-track">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <span key={i}>let's build ✦</span>
+            ))}
+          </div>
+        </div>
+        <div className="hm-cta-orb" />
         <div className="cta-strip-in">
           <Reveal>
-            <h2 className="cta-strip-h">
+            <div className="hero-eye hm-cta-eye">
+              <div className="hero-dot" />
+              <span>project.start()</span>
+            </div>
+          </Reveal>
+          <Reveal delay={60}>
+            <h2 className="cta-strip-h hm-cta-h">
               Have a fintech idea that needs
               <br />
-              <GT c="a real interface?" />
+              <span className="tg hm-shimmer">a real interface?</span>
             </h2>
           </Reveal>
-          <Reveal delay={100}>
-            <Link to="/contact" className="btn-p" style={{ marginTop: 28 }}>
-              Start a project →
-            </Link>
+          <Reveal delay={120}>
+            <p className="hm-cta-sub">
+              Tell us what you're building. We'll come back with a plan, a
+              timeline, and the first screens we'd design.
+            </p>
+          </Reveal>
+          <Reveal delay={180}>
+            <div className="hm-cta-btns">
+              <Link to="/contact" className="btn-p hm-shine hm-cta-primary">
+                Start a project →
+              </Link>
+              <a href="mailto:officialolamide001@gmail.com" className="btn-s hm-cta-ghost">
+                officialolamide001@gmail.com
+              </a>
+            </div>
           </Reveal>
         </div>
       </section>

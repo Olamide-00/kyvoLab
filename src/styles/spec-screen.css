@@ -1,0 +1,96 @@
+/* ── fintech phone screens (shared) ── */
+@keyframes svRow { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes svPop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: none; } }
+@keyframes svSuccess { 0%, 55% { opacity: 0; transform: translateY(8px); } 65%, 100% { opacity: 1; transform: none; } }
+@keyframes svShine { 0% { transform: translateX(-120%) skewX(-20deg); } 60%, 100% { transform: translateX(220%) skewX(-20deg); } }
+@keyframes svRing { from { stroke-dashoffset: 314; } to { stroke-dashoffset: 110; } }
+@keyframes svDraw { from { stroke-dashoffset: 320; } to { stroke-dashoffset: 0; } }
+@keyframes svFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes svSwap { 0%, 60% { transform: rotate(0); } 80%, 100% { transform: rotate(180deg); } }
+
+.sv-scr {
+  height: 100%; border-radius: 29px; overflow: hidden; background: #f5f7fb; padding: 38px 14px 14px;
+  font-family: "Inter", sans-serif; color: #080f1e; display: flex; flex-direction: column; gap: 10px;
+}
+.sv-scr-head { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 16px; animation: svFade 0.5s both; }
+.sv-scr-label { font-family: "Fira Code", monospace; font-size: 9.5px; color: #6a8da8; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+.sv-scr-card { border-radius: 16px; padding: 16px; color: #06121a; animation: svPop 0.5s 0.1s both; }
+.sv-scr-card.grad { background: linear-gradient(135deg, #00d9b4, #1478e0); }
+.sv-scr-card > span { font-size: 10px; opacity: 0.75; font-family: "Fira Code", monospace; }
+.sv-scr-card b { display: block; font-family: "Space Grotesk", sans-serif; font-size: 22px; margin: 2px 0 12px; }
+.sv-scr-card-acts { display: flex; gap: 6px; }
+.sv-scr-card-acts em { font-style: normal; font-size: 10.5px; font-weight: 600; padding: 5px 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.35); }
+.sv-scr-txn {
+  display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: #fff;
+  box-shadow: 0 2px 8px rgba(8, 15, 30, 0.04); font-size: 11.5px; animation: svRow 0.5s both;
+}
+.sv-scr-txn i { width: 26px; height: 26px; border-radius: 8px; background: rgba(8, 15, 30, 0.06); flex-shrink: 0; }
+.sv-scr-txn i.in { background: rgba(0, 217, 180, 0.18); }
+.sv-scr-txn i.out { background: rgba(255, 95, 87, 0.14); }
+.sv-scr-txn i.due { background: rgba(245, 158, 11, 0.2); }
+.sv-scr-txn span { flex: 1; min-width: 0; font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
+.sv-scr-txn b { font-family: "Space Grotesk", sans-serif; font-size: 12px; flex-shrink: 0; }
+.sv-scr-txn b.in { color: #00a98a; }
+
+.sv-scr-nets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.sv-scr-nets span { text-align: center; font-size: 9.5px; font-weight: 600; padding: 8px 0; border-radius: 9px; background: #fff; border: 1px solid rgba(8, 15, 30, 0.06); }
+.sv-scr-nets span.on { background: #fde047; border-color: #eab308; }
+.sv-scr-input { padding: 11px 12px; border-radius: 10px; background: #fff; border: 1px solid rgba(8, 15, 30, 0.08); font-family: "Fira Code", monospace; font-size: 11.5px; }
+.sv-scr-amts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.sv-scr-amts span { text-align: center; padding: 10px 0; border-radius: 10px; background: #fff; font-size: 11.5px; font-weight: 600; border: 1px solid rgba(8, 15, 30, 0.06); animation: svPop 0.4s both; }
+.sv-scr-amts span.on { background: #080f1e; color: #fff; }
+.sv-scr-btn { margin-top: auto; padding: 12px; text-align: center; border-radius: 12px; background: #080f1e; color: #fff; font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 13px; }
+.sv-scr-success { text-align: center; font-size: 11px; font-weight: 600; color: #00a98a; padding: 8px; border-radius: 10px; background: rgba(0, 217, 180, 0.12); animation: svSuccess 2.4s both; }
+
+.sv-scr-vcard {
+  position: relative; overflow: hidden; border-radius: 16px; padding: 16px; height: 130px; color: #fff;
+  background: linear-gradient(135deg, #0b1b3a, #2f8fff); display: flex; flex-direction: column; justify-content: space-between;
+  animation: svPop 0.5s 0.1s both; box-shadow: 0 14px 30px -10px rgba(47, 143, 255, 0.6);
+}
+.sv-scr-vcard::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent); animation: svShine 3s ease-in-out infinite; }
+.sv-scr-vcard-chip { width: 30px; height: 22px; border-radius: 5px; background: linear-gradient(135deg, #fde68a, #d4a017); }
+.sv-scr-vcard-num { font-family: "Fira Code", monospace; font-size: 12.5px; letter-spacing: 1px; }
+.sv-scr-vcard-foot { display: flex; justify-content: space-between; font-family: "Fira Code", monospace; font-size: 9px; opacity: 0.85; }
+.sv-scr-acct { padding: 12px; border-radius: 12px; background: #fff; animation: svRow 0.5s 0.3s both; }
+.sv-scr-acct > span { display: block; font-size: 10px; color: #6a8da8; font-family: "Fira Code", monospace; }
+.sv-scr-acct b { font-family: "Space Grotesk", sans-serif; font-size: 18px; }
+.sv-scr-toggles { display: flex; flex-direction: column; gap: 6px; }
+.sv-scr-toggles span { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-radius: 12px; background: #fff; font-size: 11.5px; font-weight: 500; animation: svRow 0.5s 0.45s both; }
+.sv-scr-toggles i { width: 30px; height: 17px; border-radius: 20px; background: rgba(8, 15, 30, 0.15); position: relative; }
+.sv-scr-toggles i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: left 0.3s; }
+.sv-scr-toggles i.on { background: #2f8fff; }
+.sv-scr-toggles i.on::after { left: 15px; }
+
+.sv-scr-ring { position: relative; width: 150px; height: 150px; margin: 6px auto; }
+.sv-scr-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.sv-scr-ring circle { fill: none; stroke-width: 10; }
+.sv-scr-ring .track { stroke: rgba(8, 15, 30, 0.07); }
+.sv-scr-ring .bar { stroke: #a78bfa; stroke-linecap: round; stroke-dasharray: 314; stroke-dashoffset: 110; animation: svRing 1.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.sv-scr-ring div { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.sv-scr-ring b { font-family: "Space Grotesk", sans-serif; font-size: 28px; }
+.sv-scr-ring span { font-size: 10px; color: #6a8da8; font-family: "Fira Code", monospace; }
+
+.sv-scr-port b { display: block; font-family: "Space Grotesk", sans-serif; font-size: 24px; }
+.sv-scr-port .up { font-size: 11px; font-weight: 600; color: #16a34a; }
+.sv-scr-line { width: 100%; height: 150px; margin-top: 8px; }
+.sv-scr-line .stroke { fill: none; stroke: #4ade80; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 320; animation: svDraw 1.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.sv-scr-line .fill { fill: url(#svInvFill); animation: svFade 1s 0.8s both; }
+.sv-scr-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: auto; }
+.sv-scr-tabs span { text-align: center; padding: 8px 0; border-radius: 9px; font-size: 11px; font-weight: 600; color: #6a8da8; }
+.sv-scr-tabs span.on { background: #080f1e; color: #fff; }
+
+.sv-scr-swap { padding: 14px; border-radius: 14px; background: #fff; animation: svRow 0.5s both; }
+.sv-scr-swap span { font-size: 10px; color: #6a8da8; font-family: "Fira Code", monospace; }
+.sv-scr-swap div { display: flex; justify-content: space-between; align-items: baseline; margin-top: 4px; }
+.sv-scr-swap b { font-family: "Space Grotesk", sans-serif; font-size: 20px; }
+.sv-scr-swap em { font-style: normal; font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 20px; background: rgba(244, 114, 182, 0.16); color: #db2777; }
+.sv-scr-swap-ico {
+  align-self: center; width: 34px; height: 34px; margin: -16px 0; z-index: 1; border-radius: 11px;
+  background: #080f1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  border: 3px solid #f5f7fb; animation: svSwap 3s ease-in-out infinite;
+}
+.sv-scr-rate { font-family: "Fira Code", monospace; font-size: 9.5px; color: #6a8da8; text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sv-scr-vcard::after, .sv-scr-swap-ico { animation: none; }
+}
