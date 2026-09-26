@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense, lazy } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -16,6 +16,9 @@ import Contact from "./pages/Contact.tsx";
 import Team from "./pages/Team.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
+const Blog = lazy(() => import("./pages/Blog.tsx"));
+const BlogPost = lazy(() => import("./pages/BlogPost.tsx"));
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <HelmetProvider>
@@ -27,6 +30,8 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/work" element={<Work />} />
             <Route path="/work/:slug" element={<CaseStudy />} />
             <Route path="/team" element={<Team />} />
+            <Route path="/blog" element={<Suspense fallback={null}><Blog /></Suspense>} />
+            <Route path="/blog/:slug" element={<Suspense fallback={null}><BlogPost /></Suspense>} />
             <Route path="/referral" element={<Referral />} />
             <Route path="/commission" element={<Commission />} />
             <Route path="/contact" element={<Contact />} />

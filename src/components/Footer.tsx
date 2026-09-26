@@ -42,6 +42,7 @@ export default function Footer() {
               <Link className="flnk" to="/services">Services</Link>
               <Link className="flnk" to="/work">Our projects</Link>
               <Link className="flnk" to="/team">Meet the team</Link>
+              <Link className="flnk" to="/blog">Blog</Link>
               <Link className="flnk" to="/referral">Referral program</Link>
               <Link className="flnk" to="/commission">Commission structure</Link>
             </div>

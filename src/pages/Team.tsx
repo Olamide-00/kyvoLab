@@ -24,18 +24,37 @@ const VALUES = [
 
 const STATS = [
   { n: TEAM.length, suffix: "", l: "core leads" },
-  { n: PROJECTS.filter((p) => p.status === "shipped").length, suffix: "+", l: "products shipped" },
+  {
+    n: PROJECTS.filter((p) => p.status === "shipped").length,
+    suffix: "+",
+    l: "products shipped",
+  },
   { n: 4, suffix: "", l: "disciplines under one roof" },
   { n: 100, suffix: "%", l: "fintech focused" },
 ];
 
-function Portrait({ m, size = "md" }: { m: TeamMember; size?: "sm" | "md" | "lg" }) {
+function Portrait({
+  m,
+  size = "md",
+}: {
+  m: TeamMember;
+  size?: "sm" | "md" | "lg";
+}) {
   return (
-    <div className={`tm-portrait tm-portrait-${size}`} style={{ ["--accent" as string]: m.accent }}>
+    <div
+      className={`tm-portrait tm-portrait-${size}`}
+      style={{ ["--accent" as string]: m.accent }}
+    >
       <div className="tm-portrait-ring" />
       <div className="tm-portrait-ring r2" />
       <div className="tm-portrait-disc">
-        <img src={m.photo} alt={`${m.name}, ${m.role} at KyvoLab`} loading="lazy" width={400} height={400} />
+        <img
+          src={m.photo}
+          alt={`${m.name}, ${m.role} at KyvoLab`}
+          loading="lazy"
+          width={400}
+          height={400}
+        />
       </div>
     </div>
   );
@@ -101,7 +120,12 @@ export default function Team() {
                 <span className="tc-teal">$</span> whoami{" "}
                 <span className="tc-dim">→</span>{" "}
                 <span className="tm-whoami-out">
-                  <Typed strings={TEAM.map((m) => `${m.name.split(" ")[0].toLowerCase()} // ${m.role.toLowerCase()}`)} />
+                  <Typed
+                    strings={TEAM.map(
+                      (m) =>
+                        `${m.name.split(" ")[0].toLowerCase()} // ${m.role.toLowerCase()}`,
+                    )}
+                  />
                 </span>
               </div>
             </Reveal>
@@ -123,18 +147,25 @@ export default function Team() {
                     <div
                       key={m.slug}
                       className="tm-orbit-node"
-                      style={{ transform: `rotate(${angle}deg) translateX(175px)` }}
+                      style={{
+                        transform: `rotate(${angle}deg) translateX(175px)`,
+                      }}
                     >
                       <div className="tm-orbit-counter">
                         <button
                           type="button"
                           className="tm-orbit-chip"
-                          style={{ transform: `translate(-50%, -50%) rotate(${-angle}deg)`, ["--accent" as string]: m.accent }}
+                          style={{
+                            transform: `translate(-50%, -50%) rotate(${-angle}deg)`,
+                            ["--accent" as string]: m.accent,
+                          }}
                           onClick={() => openProfile(i)}
                           aria-label={`View ${m.name}'s profile`}
                         >
                           <img src={m.photo} alt="" />
-                          <span className="tm-orbit-tip">{m.name.split(" ")[0]}</span>
+                          <span className="tm-orbit-tip">
+                            {m.name.split(" ")[0]}
+                          </span>
                         </button>
                       </div>
                     </div>
@@ -186,7 +217,11 @@ export default function Team() {
           <div className="tm-grid">
             {TEAM.map((m, i) => (
               <Reveal key={m.slug} delay={i * 110}>
-                <article id={m.slug} className="tm-card-shell" style={{ ["--accent" as string]: m.accent }}>
+                <article
+                  id={m.slug}
+                  className="tm-card-shell"
+                  style={{ ["--accent" as string]: m.accent }}
+                >
                   <MagCard cls="tm-card">
                     <div className="tm-card-spot" />
                     <div className="tm-card-top">
@@ -213,7 +248,9 @@ export default function Team() {
                           <a
                             key={s.label}
                             href={s.href}
-                            target={s.href.startsWith("http") ? "_blank" : undefined}
+                            target={
+                              s.href.startsWith("http") ? "_blank" : undefined
+                            }
                             rel="noreferrer"
                             className="tm-soc"
                             aria-label={`${m.name} on ${s.label}`}
@@ -222,7 +259,11 @@ export default function Team() {
                           </a>
                         ))}
                       </div>
-                      <button type="button" className="tm-card-more" onClick={() => openProfile(i)}>
+                      <button
+                        type="button"
+                        className="tm-card-more"
+                        onClick={() => openProfile(i)}
+                      >
                         profile <span>→</span>
                       </button>
                     </div>
@@ -264,12 +305,18 @@ export default function Team() {
             ))}
           </div>
 
-          <div ref={consoleRef} className="tm-console" style={{ ["--accent" as string]: current.accent }}>
+          <div
+            ref={consoleRef}
+            className="tm-console"
+            style={{ ["--accent" as string]: current.accent }}
+          >
             <div className="tm-console-visual" key={`v-${current.slug}`}>
               <Portrait m={current} size="lg" />
               <div className="tm-console-name">{current.name}</div>
               <div className="tm-console-role">{current.role}</div>
-              <blockquote className="tm-console-motto">“{current.motto}”</blockquote>
+              <blockquote className="tm-console-motto">
+                “{current.motto}”
+              </blockquote>
             </div>
 
             <div className="terminal tm-terminal">
@@ -281,25 +328,41 @@ export default function Team() {
               </div>
               <div className="term-body" key={`t-${current.slug}`}>
                 <div className="tm-line" style={{ animationDelay: "0ms" }}>
-                  <span className="tc-teal">$</span> <span className="tc-white">cat</span>{" "}
+                  <span className="tc-teal">$</span>{" "}
+                  <span className="tc-white">cat</span>{" "}
                   <span className="tc-blue">team/{current.slug}.json</span>
                 </div>
                 <div className="tm-line" style={{ animationDelay: "180ms" }}>
                   <span className="tc-white">{"{"}</span>
                 </div>
                 {profileLines(current).map((l, i, arr) => (
-                  <div key={l.k} className="tm-line" style={{ animationDelay: `${260 + i * 110}ms` }}>
+                  <div
+                    key={l.k}
+                    className="tm-line"
+                    style={{ animationDelay: `${260 + i * 110}ms` }}
+                  >
                     &nbsp;&nbsp;<span className="tc-blue">"{l.k}"</span>
                     <span className="tc-white">: </span>
-                    <span className={l.k === "status" ? "tc-green" : "tc-yellow"}>{l.v}</span>
+                    <span
+                      className={l.k === "status" ? "tc-green" : "tc-yellow"}
+                    >
+                      {l.v}
+                    </span>
                     {i < arr.length - 1 && <span className="tc-white">,</span>}
                   </div>
                 ))}
-                <div className="tm-line" style={{ animationDelay: `${260 + 6 * 110}ms` }}>
+                <div
+                  className="tm-line"
+                  style={{ animationDelay: `${260 + 6 * 110}ms` }}
+                >
                   <span className="tc-white">{"}"}</span>
                 </div>
-                <div className="tm-line" style={{ animationDelay: `${360 + 6 * 110}ms` }}>
-                  <span className="tc-teal">$</span> <span className="type-cursor">▌</span>
+                <div
+                  className="tm-line"
+                  style={{ animationDelay: `${360 + 6 * 110}ms` }}
+                >
+                  <span className="tc-teal">$</span>{" "}
+                  <span className="type-cursor">▌</span>
                 </div>
               </div>
             </div>
