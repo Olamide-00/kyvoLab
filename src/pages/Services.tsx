@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import AlgorithmCanvas from "../components/AlgorithmCanvas";
 import Reveal from "../components/Reveal";
-import MagCard from "../components/MagCard";
 import SEO from "../components/SEO";
 import Typed from "../components/Typed";
 import ServicesSchema from "../components/ServicesSchema";
@@ -58,7 +57,6 @@ const FINTECH: {
   desc: string;
   tags: string[];
   kind: SpecKind;
-  accent: string;
 }[] = [
   {
     icon: "▣",
@@ -66,7 +64,6 @@ const FINTECH: {
     desc: "Balance cards, transfers, and transaction feeds — the core loop every wallet app lives or dies by.",
     tags: ["Wallets", "Transfers", "Transactions"],
     kind: "wallet",
-    accent: "#00D9B4",
   },
   {
     icon: "◈",
@@ -74,7 +71,6 @@ const FINTECH: {
     desc: "Airtime, data, electricity, and cable subscriptions — one-tap bill payment experiences.",
     tags: ["VTU", "Airtime & Data", "Utilities"],
     kind: "vtu",
-    accent: "#F59E0B",
   },
   {
     icon: "⬢",
@@ -82,7 +78,6 @@ const FINTECH: {
     desc: "Digital banking interfaces for microfinance banks and neobanks — accounts, cards, and statements people trust.",
     tags: ["Digital Banking", "Accounts", "Cards"],
     kind: "bank",
-    accent: "#2F8FFF",
   },
   {
     icon: "◎",
@@ -90,7 +85,6 @@ const FINTECH: {
     desc: "Application flows, repayment schedules, and credit dashboards designed to feel transparent, not predatory.",
     tags: ["Lending", "Repayments", "Credit Scoring"],
     kind: "loan",
-    accent: "#A78BFA",
   },
   {
     icon: "⬡",
@@ -98,7 +92,6 @@ const FINTECH: {
     desc: "Portfolio dashboards, market data, and trade flows built for clarity under real market pressure.",
     tags: ["Portfolios", "Market Data", "Trading UX"],
     kind: "invest",
-    accent: "#4ADE80",
   },
   {
     icon: "◐",
@@ -106,7 +99,6 @@ const FINTECH: {
     desc: "Wallets, swaps, and on-chain activity made legible for people who aren't reading a block explorer.",
     tags: ["Wallets", "Swaps", "On-chain"],
     kind: "crypto",
-    accent: "#F472B6",
   },
 ];
 
@@ -304,16 +296,10 @@ function CoreMock({ kind }: { kind: MockKind }) {
   );
 }
 
-function Card({ children, accent }: { children: ReactNode; accent?: string }) {
+function Card({ children }: { children: ReactNode }) {
   return (
-    <div
-      className="sv-shell"
-      style={accent ? { ["--accent" as string]: accent } : undefined}
-    >
-      <MagCard cls="sv-card">
-        <div className="sv-card-spot" />
-        {children}
-      </MagCard>
+    <div className="sv-shell">
+      <div className="sv-card">{children}</div>
     </div>
   );
 }
@@ -395,7 +381,6 @@ export default function Services() {
           <Reveal delay={220} className="orbit-reveal-wrap">
             <div className="orbit-section">
               <div className="orbit-wrap">
-                <div className="orbit-glow" />
                 <div className="orbit-line" />
                 <div className="orbit-line l2" />
                 <div className="orbit-core">KyvoLab</div>
@@ -459,7 +444,6 @@ export default function Services() {
 
       {/* ── CORE CAPABILITIES (bento) ── */}
       <section className="sec sv-dark">
-        <div className="sv-aurora" />
         <div className="sec-in">
           <Reveal>
             <div className="eyebrow">core capabilities</div>
@@ -519,7 +503,6 @@ export default function Services() {
           <div
             ref={explorerRef}
             className={`sv-explorer ${explorerInView ? "run" : ""}`}
-            style={{ ["--accent" as string]: spec.accent }}
           >
             <div
               className="sv-ex-list"
@@ -532,7 +515,6 @@ export default function Services() {
                   role="tab"
                   aria-selected={i === active}
                   className={`sv-ex-item ${i === active ? "on" : ""}`}
-                  style={{ ["--accent" as string]: f.accent }}
                   onClick={() => setActive(i)}
                 >
                   <span className="sv-ex-icon">{f.icon}</span>
@@ -554,7 +536,6 @@ export default function Services() {
             </div>
 
             <div className="sv-ex-stage">
-              <div className="sv-ex-glow" />
               <div className="sv-ex-phone" key={spec.kind}>
                 <div className="sv-ex-notch" />
                 <SpecScreen kind={spec.kind} />
@@ -734,7 +715,7 @@ export default function Services() {
           </Reveal>
           <Reveal delay={100}>
             <div className="sv-cta-btns">
-              <Link to="/work" className="btn-p sv-btn-glow">
+              <Link to="/work" className="btn-p sv-btn-solid">
                 View our work →
               </Link>
               <Link to="/contact" className="btn-s sv-btn-ghost">

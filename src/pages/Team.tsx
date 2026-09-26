@@ -3,7 +3,6 @@ import { useRef, useState } from "react";
 import AlgorithmCanvas from "../components/AlgorithmCanvas";
 import CountUp from "../components/CountUp";
 import Reveal from "../components/Reveal";
-import MagCard from "../components/MagCard";
 import SEO from "../components/SEO";
 import TeamSchema from "../components/TeamSchema";
 import Typed from "../components/Typed";
@@ -32,6 +31,9 @@ const STATS = [
   { n: 4, suffix: "", l: "disciplines under one roof" },
   { n: 100, suffix: "%", l: "fintech focused" },
 ];
+
+const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+const LEAD_COUNT = NUMBER_WORDS[TEAM.length] ?? String(TEAM.length);
 
 function Portrait({
   m,
@@ -85,7 +87,7 @@ export default function Team() {
     <>
       <SEO
         title="Meet the Team — Engineers Behind KyvoLab | KyvoLab"
-        description="Meet the KyvoLab team: Olamide Oladele (CTO), Igbalaye Femi (Engineering Lead), Badmus Praise (HR & Social Media) and Ayomide Quam (Cyber Security Lead) — the people building fintech products for Africa."
+        description="Meet the KyvoLab team: Olamide Oladele (CTO), Igbalaye Femi (Engineering Lead), Babalola Kenny (Legal & Compliance), Badmus Praise (HR & Social Media) and Ayomide Quam (Cyber Security Lead) — the people building fintech products for Africa."
         path="/team"
       />
       <TeamSchema team={TEAM} />
@@ -135,7 +137,6 @@ export default function Team() {
             <div className="tm-orbit">
               <div className="tm-orbit-line" />
               <div className="tm-orbit-line l2" />
-              <div className="tm-orbit-glow" />
               <div className="tm-orbit-core">
                 <span>Kyvo</span>
                 <span className="tm-orbit-core-sub">team</span>
@@ -202,7 +203,7 @@ export default function Team() {
           </Reveal>
           <Reveal delay={80}>
             <h2 className="sec-h2" style={{ color: "#fff" }}>
-              Four leads.
+              {LEAD_COUNT} leads.
               <br />
               <span className="tg">One standard.</span>
             </h2>
@@ -210,7 +211,7 @@ export default function Team() {
           <Reveal delay={140}>
             <p className="sec-sub" style={{ color: "#8b9bb5" }}>
               Every product we ship passes through these hands — architecture,
-              engineering, security and the people who make it all run.
+              engineering, security, legal and the people who make it all run.
             </p>
           </Reveal>
 
@@ -222,8 +223,7 @@ export default function Team() {
                   className="tm-card-shell"
                   style={{ ["--accent" as string]: m.accent }}
                 >
-                  <MagCard cls="tm-card">
-                    <div className="tm-card-spot" />
+                  <div className="tm-card">
                     <div className="tm-card-top">
                       <span className="tm-card-idx">0{i + 1}</span>
                       <span className="tm-card-status">
@@ -267,7 +267,7 @@ export default function Team() {
                         profile <span>→</span>
                       </button>
                     </div>
-                  </MagCard>
+                  </div>
                 </article>
               </Reveal>
             ))}
@@ -407,7 +407,7 @@ export default function Team() {
           </Reveal>
           <Reveal delay={100}>
             <div className="tm-cta-btns">
-              <Link to="/contact" className="btn-p tm-btn-glow">
+              <Link to="/contact" className="btn-p tm-btn-solid">
                 Start a project →
               </Link>
               <Link to="/work" className="btn-s tm-btn-ghost">

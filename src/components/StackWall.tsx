@@ -135,7 +135,6 @@ export default function StackWall() {
               style={{ ["--c" as string]: t.color, ["--i" as string]: i }}
               aria-hidden={!match}
             >
-              <div className="hm-tile-glow" />
               <div className="hm-tile-ico">
                 {t.icon ? (
                   <svg viewBox="0 0 24 24" aria-hidden>

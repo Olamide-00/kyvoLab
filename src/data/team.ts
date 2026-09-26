@@ -12,7 +12,12 @@ export type TeamMember = {
   socials: { label: string; href: string }[];
 };
 
-// Placeholder portraits — swap `photo` for real headshots (e.g. import from src/assets/team).
+import olamidePhoto from "../assets/team/olamide-oladele.jpg";
+import femiPhoto from "../assets/team/igbalaye-femi.jpg";
+import kennyPhoto from "../assets/team/babalola-kenny.jpg";
+import praisePhoto from "../assets/team/badmus-praise.jpg";
+
+// Placeholder portrait for members whose headshot isn't ready yet.
 const avatar = (seed: string) =>
   `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(seed)}&backgroundColor=transparent`;
 
@@ -23,7 +28,7 @@ export const TEAM: TeamMember[] = [
     role: "Chief Technology Officer",
     handle: "cto",
     accent: "#00D9B4",
-    photo: avatar("Olamide Oladele"),
+    photo: olamidePhoto,
     bio: "Sets the technical direction at KyvoLab — from ledger architecture and payment rails to how every product gets built, reviewed, and shipped.",
     focus: ["Architecture", "Fintech Infrastructure", "Product Strategy"],
     stack: ["TypeScript", "React Native", "Node.js", "PostgreSQL"],
@@ -39,7 +44,7 @@ export const TEAM: TeamMember[] = [
     role: "Engineering Lead",
     handle: "eng.lead",
     accent: "#2F8FFF",
-    photo: avatar("Igbalaye Femi"),
+    photo: femiPhoto,
     bio: "Runs day-to-day engineering — turning approved designs into production apps, keeping the codebase clean, and the release train on time.",
     focus: ["Mobile Engineering", "Code Quality", "Delivery"],
     stack: ["Flutter", "React", "APIs", "CI/CD"],
@@ -50,12 +55,28 @@ export const TEAM: TeamMember[] = [
     ],
   },
   {
+    slug: "babalola-kenny",
+    name: "Babalola Kenny",
+    role: "Legal & Compliance Lead",
+    handle: "legal",
+    accent: "#4ADE80",
+    photo: kennyPhoto,
+    bio: "Keeps KyvoLab and its clients on the right side of the rules — contracts, licensing questions, data protection and the regulatory groundwork every fintech needs before launch.",
+    focus: ["Legal", "Regulatory Compliance", "Data Protection"],
+    stack: ["Contracts", "CBN Guidelines", "NDPA", "AML/KYC Policy"],
+    motto: "Compliance is part of the product.",
+    socials: [
+      { label: "in", href: "https://www.linkedin.com/company/kyvolab" },
+      { label: "✉", href: "mailto:officialolamide001@gmail.com" },
+    ],
+  },
+  {
     slug: "badmus-praise",
     name: "Badmus Praise",
     role: "HR & Social Media Manager",
     handle: "people.social",
     accent: "#A78BFA",
-    photo: avatar("Badmus Praise"),
+    photo: praisePhoto,
     bio: "Looks after the people who build KyvoLab and the community that follows it — hiring, culture, and the voice of the brand online.",
     focus: ["People & Culture", "Talent", "Brand Voice"],
     stack: ["Recruiting", "Content", "Community", "Analytics"],

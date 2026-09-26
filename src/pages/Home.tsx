@@ -33,7 +33,6 @@ const SERVICE_TEASE: {
   desc: string;
   tags: string[];
   kind: SpecKind;
-  accent: string;
 }[] = [
   {
     icon: "◆",
@@ -41,7 +40,6 @@ const SERVICE_TEASE: {
     desc: "Digital banking interfaces for microfinance banks and neobanks — accounts, cards, and statements people actually trust.",
     tags: ["Accounts", "Cards", "Statements"],
     kind: "bank",
-    accent: "#2F8FFF",
   },
   {
     icon: "▣",
@@ -49,7 +47,6 @@ const SERVICE_TEASE: {
     desc: "Balance cards, transfers, and transaction flows built around how people actually move money.",
     tags: ["Wallets", "Transfers", "Payouts"],
     kind: "wallet",
-    accent: "#00D9B4",
   },
   {
     icon: "◈",
@@ -57,7 +54,6 @@ const SERVICE_TEASE: {
     desc: "Airtime, data, electricity, and cable subscriptions — one-tap bill payment experiences.",
     tags: ["Airtime & Data", "Electricity", "Cable TV"],
     kind: "vtu",
-    accent: "#F59E0B",
   },
 ];
 
@@ -585,7 +581,28 @@ export default function Home() {
   const featured = PROJECTS.slice(0, 3);
   const heroRef = useRef<HTMLElement | null>(null);
   const [teaseActive, setTeaseActive] = useState(1);
+  const [teaseAuto, setTeaseAuto] = useState(
+    () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  const panelsRef = useRef<HTMLDivElement | null>(null);
+  const [panelsInView, setPanelsInView] = useState(false);
   const [railFocus, setRailFocus] = useState<RailCategory | null>(null);
+
+  useEffect(() => {
+    const el = panelsRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => setPanelsInView(e.isIntersecting),
+      { threshold: 0.35 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const pickTease = (i: number) => {
+    setTeaseActive(i);
+    setTeaseAuto(false);
+  };
 
   const onHeroMove = (e: React.MouseEvent<HTMLElement>) => {
     const el = heroRef.current;
@@ -593,8 +610,6 @@ export default function Home() {
     const r = el.getBoundingClientRect();
     const x = e.clientX - r.left;
     const y = e.clientY - r.top;
-    el.style.setProperty("--hx", `${x}px`);
-    el.style.setProperty("--hy", `${y}px`);
     el.style.setProperty("--px", ((x / r.width) * 2 - 1).toFixed(3));
     el.style.setProperty("--py", ((y / r.height) * 2 - 1).toFixed(3));
   };
@@ -613,7 +628,6 @@ export default function Home() {
         <div className="hero-scrim" />
         <div className="hm-blob b1" />
         <div className="hm-blob b2" />
-        <div className="hm-spot" />
 
         <div className="hero-inner">
           <div>
@@ -894,7 +908,8 @@ export default function Home() {
               <div className="hm-tease-side">
                 <p className="sec-sub">
                   From the first sketch to the production build — the three
-                  product types we ship most. Tap or hover to look inside.
+                  product types we ship most. They cycle on their own — tap
+                  any one to stay on it.
                 </p>
                 <Link to="/services" className="link-arrow hm-tease-link">
                   See all services →
@@ -904,22 +919,32 @@ export default function Home() {
           </div>
 
           <Reveal delay={180}>
-            <div className="hm-panels">
+            <div
+              ref={panelsRef}
+              className={`hm-panels${panelsInView ? " run" : ""}`}
+            >
               {SERVICE_TEASE.map((s, i) => {
                 const on = i === teaseActive;
                 return (
                   <div
                     key={s.title}
                     className={`hm-panel ${on ? "on" : ""}`}
-                    style={{ ["--accent" as string]: s.accent }}
                     onMouseEnter={() => setTeaseActive(i)}
-                    onClick={() => setTeaseActive(i)}
+                    onClick={() => pickTease(i)}
                     onFocus={() => setTeaseActive(i)}
                     tabIndex={0}
                     role="button"
                     aria-expanded={on}
                   >
-                    <div className="hm-panel-glow" />
+                    {on && teaseAuto && (
+                      <span
+                        key={`p-${i}`}
+                        className="hm-panel-progress"
+                        onAnimationEnd={() =>
+                          setTeaseActive((a) => (a + 1) % SERVICE_TEASE.length)
+                        }
+                      />
+                    )}
                     <div className="hm-panel-top">
                       <span className="hm-panel-idx">0{i + 1}</span>
                       <span className="hm-panel-icon">{s.icon}</span>
@@ -1016,7 +1041,6 @@ export default function Home() {
 
           <Reveal delay={180}>
             <div className="hm-console-wrap">
-              <div className="hm-console-glow" />
               <DevBuildConsole />
             </div>
           </Reveal>
@@ -1122,7 +1146,6 @@ export default function Home() {
                   style={{ ["--accent" as string]: p.accent }}
                 >
                   <div className="hm-work-thumb">
-                    <div className="hm-work-thumb-glow" />
                     {p.status === "shipped" ? (
                       <div className="hm-work-phones">
                         <PhoneFrame
