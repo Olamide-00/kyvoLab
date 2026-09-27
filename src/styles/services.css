@@ -52,7 +52,9 @@
 .orbit-node { position: absolute; top: 50%; left: 50%; width: 0; height: 0; }
 .orbit-node-spin { position: absolute; top: 0; left: 0; width: 0; height: 0; animation: orbitSpinRev 44s linear infinite; }
 .orbit-ring.r2 .orbit-node-spin { animation: orbitSpin 34s linear infinite; }
-.orbit-wrap:hover .orbit-ring, .orbit-wrap:hover .orbit-node-spin { animation-play-state: paused; }
+@media (hover: hover) {
+  .orbit-wrap:hover .orbit-ring, .orbit-wrap:hover .orbit-node-spin { animation-play-state: paused; }
+}
 .orbit-node-inner { position: absolute; top: 0; left: 0; display: flex; flex-direction: column; align-items: center; gap: 5px; }
 .orbit-node-chip {
   width: 48px; height: 48px; border-radius: 14px; background: #0b0f1a;
@@ -180,7 +182,9 @@
   background: var(--accent); animation: svProgress 6s linear forwards; animation-play-state: paused;
 }
 .sv-explorer.run .sv-ex-progress { animation-play-state: running; }
-.sv-explorer.run:hover .sv-ex-progress { animation-play-state: paused; }
+@media (hover: hover) {
+  .sv-explorer.run:hover .sv-ex-progress { animation-play-state: paused; }
+}
 
 .sv-ex-stage {
   position: relative; overflow: hidden; border-radius: 28px; padding: 40px 36px;

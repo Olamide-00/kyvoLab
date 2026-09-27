@@ -87,7 +87,7 @@ export default function Team() {
     <>
       <SEO
         title="Meet the Team — Engineers Behind KyvoLab | KyvoLab"
-        description="Meet the KyvoLab team: Olamide Oladele (CTO), Igbalaye Femi (Engineering Lead), Babalola Kenny (Legal & Compliance), Badmus Praise (HR & Social Media) and Ayomide Quam (Cyber Security Lead) — the people building fintech products for Africa."
+        description="Meet the KyvoLab team: Olamide Oladele (CTO), Igbalaye Femi (Engineering Lead), Ayomide Quam (Cyber Security Lead), Badmus Praise (HR & Social Media) and Babalola Kenny (Legal & Compliance) — the people building fintech products for Africa."
         path="/team"
       />
       <TeamSchema team={TEAM} />
@@ -139,7 +139,7 @@ export default function Team() {
               <div className="tm-orbit-line l2" />
               <div className="tm-orbit-core">
                 <span>Kyvo</span>
-                <span className="tm-orbit-core-sub">team</span>
+                <span className="tm-orbit-core-sub">team lead</span>
               </div>
               <div className="tm-orbit-ring">
                 {TEAM.map((m, i) => {
