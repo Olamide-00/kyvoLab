@@ -443,7 +443,124 @@ img {
 .fblnk:hover { color: #00d9b4; }
 
 /* ── toast ── */
-.toast { position: fixed; bottom: 32px; right: 32px; z-index: 400; background: #080f1e; color: white; padding: 15px 22px; border-radius: 14px; font-size: 14px; font-weight: 600; box-shadow: 0 20px 50px rgba(8, 15, 30, 0.4); display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s ease; border: 1px solid rgba(0, 217, 180, 0.25); font-family: "Space Grotesk", sans-serif; max-width: calc(100vw - 48px); }
+.toast { position: fixed; bottom: 96px; right: 28px; z-index: 500; background: #080f1e; color: white; padding: 15px 22px; border-radius: 14px; font-size: 14px; font-weight: 600; box-shadow: 0 20px 50px rgba(8, 15, 30, 0.4); display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s ease; border: 1px solid rgba(0, 217, 180, 0.25); font-family: "Space Grotesk", sans-serif; max-width: calc(100vw - 48px); }
+
+/* ── floating whatsapp button ── */
+.wa-float-container {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 450;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.wa-float-btn {
+  pointer-events: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2fe675, #20ba59);
+  color: #ffffff;
+  box-shadow: 0 10px 28px -4px rgba(32, 186, 89, 0.48), 0 4px 12px rgba(8, 15, 30, 0.25);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-decoration: none;
+  animation: waPulse 3s infinite;
+}
+
+.wa-float-btn:hover {
+  transform: scale(1.08) translateY(-2px);
+  background: linear-gradient(135deg, #38f080, #25d366);
+  box-shadow: 0 16px 36px -4px rgba(37, 211, 102, 0.6), 0 6px 16px rgba(8, 15, 30, 0.35);
+  color: #ffffff;
+}
+
+.wa-float-btn:active {
+  transform: scale(0.96);
+}
+
+.wa-icon {
+  width: 30px;
+  height: 30px;
+  fill: #ffffff;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+  transition: transform 0.25s ease;
+}
+
+.wa-float-btn:hover .wa-icon {
+  transform: scale(1.05);
+}
+
+.wa-tooltip {
+  position: absolute;
+  right: calc(100% + 14px);
+  white-space: nowrap;
+  background: #090e18;
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  box-shadow: 0 12px 30px rgba(8, 15, 30, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(8px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wa-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%) rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background: #090e18;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wa-tooltip.show,
+.wa-float-btn:hover .wa-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.wa-tooltip-status {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #25d366;
+  box-shadow: 0 0 8px #25d366;
+  display: inline-block;
+}
+
+@keyframes waPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5), 0 8px 24px rgba(8, 15, 30, 0.25);
+  }
+  65% {
+    box-shadow: 0 0 0 14px rgba(37, 211, 102, 0), 0 8px 24px rgba(8, 15, 30, 0.25);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0), 0 8px 24px rgba(8, 15, 30, 0.25);
+  }
+}
 
 /* ── responsive ── */
 @media (max-width: 1100px) {
@@ -474,5 +591,20 @@ img {
 @media (max-width: 640px) {
   .svc-grid, .comm-grid, .process-grid, .feat-grid, .tease-grid { grid-template-columns: 1fr; }
   .fg { grid-template-columns: 1fr; }
-  .toast { right: 16px; left: 16px; bottom: 16px; }
+  .toast { right: 16px; left: 16px; bottom: 84px; }
+  .wa-float-container {
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    right: 20px;
+  }
+  .wa-float-btn {
+    width: 52px;
+    height: 52px;
+  }
+  .wa-icon {
+    width: 26px;
+    height: 26px;
+  }
+  .wa-tooltip {
+    display: none;
+  }
 }

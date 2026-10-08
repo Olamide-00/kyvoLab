@@ -237,6 +237,38 @@ export default function CaseStudy() {
               </Reveal>
             ))}
           </div>
+
+          {project.url && (
+            <Reveal delay={120}>
+              <div
+                style={{
+                  marginTop: 44,
+                  display: "flex",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  gap: 16,
+                }}
+              >
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-p"
+                >
+                  Visit live website →
+                </a>
+                <span
+                  style={{
+                    fontFamily: "Fira Code, monospace",
+                    fontSize: 12.5,
+                    color: "#8b9bb5",
+                  }}
+                >
+                  {project.url}
+                </span>
+              </div>
+            </Reveal>
+          )}
         </div>
       </section>
 
