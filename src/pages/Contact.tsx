@@ -74,7 +74,7 @@ const SOCIALS = [
   {
     label: "X",
     handle: "@kyvolab",
-    href: "https://x.com/kyvo_lab",
+    href: "https://x.com/kyvolab",
     slug: "x",
   },
   {
