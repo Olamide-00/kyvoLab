@@ -17,6 +17,11 @@ import psiAdminReports from "../assets/work/psi-admin-reports.jpg";
 import nairaxHome from "../assets/work/nairax-home.jpg";
 import nairaxSquad from "../assets/work/nairax-squad.jpg";
 import nairaxRank from "../assets/work/nairax-rank.jpg";
+import wtsnsHero from "../assets/work/wtsns-hero.jpg";
+import wtsnsStory from "../assets/work/wtsns-story.jpg";
+import wtsnsChapters from "../assets/work/wtsns-chapters.jpg";
+import wtsnsExcerpt from "../assets/work/wtsns-excerpt.jpg";
+import wtsnsAuthor from "../assets/work/wtsns-author.jpg";
 
 export type GalleryShot = {
   src: string;
@@ -48,6 +53,7 @@ export type Project = {
   gallery: GalleryShot[];
   highlights: Highlight[];
   url?: string;
+  device?: "mobile" | "desktop";
 };
 
 export const PROJECTS: Project[] = [
@@ -242,6 +248,7 @@ export const PROJECTS: Project[] = [
     year: "2026",
     status: "shipped",
     url: "https://www.dekingstransportation.com.ng",
+    device: "desktop",
     cover: dekingsHero,
     coverAlt:
       "De Kings homepage hero — Premium transport & logistics, on your terms",
@@ -349,6 +356,80 @@ export const PROJECTS: Project[] = [
       {
         title: "Onboarding that states the numbers up front",
         desc: "Before login, the app leads with real performance metrics — 99.8% delivery accuracy, 10K+ items managed daily — setting the operational bar before the client ever sees a package list.",
+      },
+    ],
+  },
+  {
+    slug: "wtsns",
+    name: "What the Silence Never Said",
+    client: "Dr. Steve Araba",
+    category: "Publishing · Author Platform & Book Experience",
+    tagline:
+      "A book about the words we never spoke, and the courage to finally say them.",
+    description:
+      "What the Silence Never Said is an editorial author platform and book launch web experience built for Dr. Steve Araba. Exploring fatherhood, identity, vulnerability, and the weight of words left unspoken, the platform brings the book to life with a physics-driven 3D hardcover that reacts to cursor movement, a multi-chapter discovery track, an inline reading room for Chapter One, an interactive launch timeline, and a press & media kit with downloadable assets.",
+    metaTitle:
+      "What the Silence Never Said — Dr. Steve Araba | KyvoLab Case Study",
+    metaDescription:
+      "How KyvoLab designed and engineered the interactive 3D author platform and launch experience for What the Silence Never Said by Dr. Steve Araba.",
+    accent: "#C8A15A",
+    accentSoft: "rgba(200,161,90,.35)",
+    role: [
+      "Product Design",
+      "Interactive 3D Web",
+      "Frontend Engineering",
+      "Editorial UI",
+    ],
+    year: "2026",
+    status: "shipped",
+    url: "https://wtsns.onrender.com/",
+    device: "desktop",
+    cover: wtsnsHero,
+    coverAlt:
+      "What the Silence Never Said hero section with interactive 3D book and gold typography",
+    gallery: [
+      {
+        src: wtsnsHero,
+        alt: "What the Silence Never Said hero screen with 3D hardcover book and typography",
+        label: "Hero — 3D Book & Pre-order",
+      },
+      {
+        src: wtsnsStory,
+        alt: "Interactive story narrative pacing with 3D tilt perspective",
+        label: "Story — Narrative & Perspective",
+      },
+      {
+        src: wtsnsChapters,
+        alt: "Inside the book chapter cards track covering introductory themes",
+        label: "Chapters — Horizontal Discovery Track",
+      },
+      {
+        src: wtsnsExcerpt,
+        alt: "Free chapter reading room with warm parchment styling",
+        label: "Excerpt — Chapter One Reading Room",
+      },
+      {
+        src: wtsnsAuthor,
+        alt: "Author bio section featuring Dr. Steve Araba with speaking invitation",
+        label: "Author — Dr. Steve Araba Profile",
+      },
+    ],
+    highlights: [
+      {
+        title: "Cursor-reactive 3D hardcover physics",
+        desc: "A custom CSS 3D hardcover book responds in real time to the user's cursor across the viewport, adjusting multi-axis tilt, realistic drop shadows, and dynamic gold sheen reflections for a tactile physical presence on screen.",
+      },
+      {
+        title: "Inline Chapter One reading room",
+        desc: "Rather than forcing visitors into a third-party PDF download, Chapter One is rendered right inside an editorial reading room with warm parchment styling, paired with instant automated delivery upon email submission.",
+      },
+      {
+        title: "Scroll-synced chapter exploration",
+        desc: "From 'The Wound' and 'The Mask' to 'Becoming the Father You Didn’t Have', the book’s eight sections unfold in a horizontal scroll track, giving readers a tangible sense of the journey before committing to a purchase.",
+      },
+      {
+        title: "Launch ecosystem & press kit",
+        desc: "Complete launch readiness with dual pre-order links for Amazon and Selar, an interactive countdown clock with calendar .ics event generator, reader testimonials, and a media kit with ready-to-publish assets.",
       },
     ],
   },

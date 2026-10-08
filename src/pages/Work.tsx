@@ -59,6 +59,8 @@ export default function Work() {
                         src={p.cover}
                         alt={p.coverAlt}
                         accent={p.accent}
+                        device={p.device}
+                        url={p.url}
                         tilt={i % 2 === 0 ? "left" : "right"}
                       />
                     ) : (
@@ -71,6 +73,7 @@ export default function Work() {
                   <div className="work-card-body">
                     <div className="work-card-top">
                       <div className="feat-card-cat">{p.category}</div>
+                      {p.url && <span className="live-pill">Live ↗</span>}
                       {p.status === "in-progress" && (
                         <span className="status-pill">in progress</span>
                       )}

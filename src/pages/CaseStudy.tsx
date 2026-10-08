@@ -129,6 +129,11 @@ export default function CaseStudy() {
               <span style={{ fontFamily: "Fira Code, monospace" }}>
                 {project.category} · {project.year}
               </span>
+              {project.url && (
+                <span className="live-pill" style={{ marginLeft: 6, fontSize: 9, padding: "2px 7px" }}>
+                  Live ↗
+                </span>
+              )}
             </div>
           </Reveal>
           <Reveal delay={120}>
@@ -190,6 +195,8 @@ export default function CaseStudy() {
                   variant={i === 0 ? "full" : "detail"}
                   tilt={i % 2 === 0 ? "left" : "right"}
                   accent={project.accent}
+                  device={project.device}
+                  url={project.url}
                 />
                 <div className="cs-gallery-label">{g.label}</div>
               </Reveal>

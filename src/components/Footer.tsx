@@ -53,7 +53,7 @@ export default function Footer() {
             <div className="fc-links">
               <Link className="flnk" to="/work/depay">DePay</Link>
               <Link className="flnk" to="/work/jaan">Jaan</Link>
-              <Link className="flnk" to="/work/swiftpay">SwiftPay</Link>
+              <Link className="flnk" to="/work/wtsns">Silence Never Said</Link>
             </div>
           </div>
 

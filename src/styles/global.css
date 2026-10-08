@@ -241,6 +241,45 @@ img {
 .detail-frame { border-radius: 18px; overflow: hidden; box-shadow: 0 24px 60px -16px rgba(8, 15, 30, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 40px -12px var(--accent, #00d9b4); border: 1px solid rgba(255, 255, 255, 0.08); }
 .detail-frame img { width: 100%; display: block; }
 
+/* ── browser frames (web screenshots) ── */
+.browser-frame {
+  position: relative; width: 100%; max-width: 520px; border-radius: 14px; overflow: hidden;
+  background: #0d1320;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 30px 80px -16px rgba(8, 15, 30, 0.6), 0 0 50px -16px var(--accent, #00d9b4);
+  margin: 0 auto;
+  --ry: 0deg;
+  transform: rotateY(var(--ry)) rotateX(2deg);
+  transform-style: preserve-3d;
+  animation: phoneFloat 6s ease-in-out infinite;
+}
+.browser-frame.tilt-left { --ry: -6deg; }
+.browser-frame.tilt-right { --ry: 6deg; }
+.browser-bar {
+  display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+  background: #090e18; border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.browser-dots { display: flex; gap: 6px; }
+.browser-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.browser-dot.red { background: #ff5f56; }
+.browser-dot.yellow { background: #ffbd2e; }
+.browser-dot.green { background: #27c93f; }
+.browser-url-bar {
+  flex: 1; margin-left: 8px; font-family: "Fira Code", monospace; font-size: 10.5px;
+  color: #8b9bb5; background: rgba(255, 255, 255, 0.05); padding: 3px 10px;
+  border-radius: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+.browser-screen { width: 100%; display: block; overflow: hidden; }
+.browser-screen img { width: 100%; display: block; }
+
+.live-pill {
+  font-family: "Fira Code", monospace; font-size: 10px; padding: 3px 9px;
+  border-radius: 100px; border: 1px solid var(--accent, #00d9b4);
+  color: var(--accent, #00d9b4); text-transform: uppercase; letter-spacing: 1px;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+
 /* ── featured work (home) ── */
 .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .feat-card { border-radius: 24px; overflow: hidden; background: #0b0f1a; border: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-direction: column; transition: all 0.35s; box-shadow: 0 2px 14px rgba(8, 15, 30, 0.06); }
@@ -265,6 +304,7 @@ img {
 .work-card:hover { border-color: var(--accent); box-shadow: 0 48px 110px rgba(8, 15, 30, 0.28); }
 .work-card-thumb { padding: 30px 16px; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 70%), linear-gradient(160deg, #0d1320, #070a12); }
 .work-card-thumb .phone-frame { width: 190px; }
+.work-card-thumb .browser-frame { width: 280px; }
 .work-card-body { padding: 34px 34px 30px; display: flex; flex-direction: column; justify-content: center; }
 .work-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
 .status-pill { font-family: "Fira Code", monospace; font-size: 10px; padding: 3px 9px; border-radius: 100px; border: 1px solid rgba(255, 255, 255, 0.15); color: #a8b6cc; text-transform: uppercase; letter-spacing: 1px; }
