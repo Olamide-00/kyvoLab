@@ -73,7 +73,7 @@ const SOCIALS = [
   },
   {
     label: "X",
-    handle: "@kyvo_lab",
+    handle: "@kyvolab",
     href: "https://x.com/kyvo_lab",
     slug: "x",
   },
@@ -94,6 +94,12 @@ const SOCIALS = [
     handle: "@kyvo_lab",
     href: "https://threads.net/@kyvo_lab",
     slug: "threads",
+  },
+  {
+    label: "TikTok",
+    handle: "@kyvolab",
+    href: "https://tiktok.com/@kyvolab",
+    slug: "tiktok",
   },
 ];
 
